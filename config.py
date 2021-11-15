@@ -33,6 +33,3 @@ class DevelopmentConfig(BasicConfig):
     ENV = "development"
     DEVELOPMENT = True
     DEBUG = True
-
-# TODO - each one of you should create own config
-# TODO - create some kind of config factory
