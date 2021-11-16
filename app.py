@@ -17,8 +17,7 @@ def create_app():
     app.config.from_object(get_proper_config_name(mode))
 
     # initialize database
-    database.init_app(app)
-
+    # database.init_app(app)
 
     # TODO register blueprints
     return app
