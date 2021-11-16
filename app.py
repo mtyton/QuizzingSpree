@@ -4,17 +4,15 @@ from flask import Flask
 from database import database
 
 
-def get_proper_config_name(mode="development"):
-
+def get_proper_config_name(mode):
     if mode == "development":
         return 'config.BasicConfig'
     return 'config.ProductionConfig'
 
 
 def create_app():
-    # FIXME - this is mockup,
-    #  this should be taken as launch parameter
-    mode = os.getenv('FLASK_ENV')
+    # get launch mode
+    mode = os.getenv('FLASK_ENV', "development")
 
     app = Flask(__name__)
     app.config.from_object(get_proper_config_name(mode))
