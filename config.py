@@ -9,13 +9,14 @@ much easier.
 
 
 class BasicConfig(object):
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = os.environ.get(
         "SECRET_KEY", '57e19ea558d4967a552d03deece34a70'
     )
+    ENV = os.environ.get('FLASK_ENV', "")
 
 
 class ProductionConfig(BasicConfig):
@@ -36,7 +37,12 @@ class DevelopmentConfig(BasicConfig):
 
 
 class TestConfig(BasicConfig):
-    TESTING = True
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG = False
+    TESTING = False
+    ENV = 'test'
+    # FIXME - this is dumb af, somehow pytest does not load .env variables!!!!
+    SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://root:zaq1%40WSX@127.0.0.1" \
+                              "/test_quizzing_spree"
+
 

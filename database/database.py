@@ -1,18 +1,16 @@
 from flask_sqlalchemy import SQLAlchemy
 
 
-db = SQLAlchemy(app)
-
-
 """
 This file creates models from all models.py files,
 using SqlAlchemy.
 """
 
+db = SQLAlchemy()
 
-def init_app(app):
-    import ipdb
-    ipdb.set_trace()
+
+def create_database(app):
+    db.app = app
     with app.app_context():
         db.init_app(app)
-        db.create_all(app)
+        db.create_all(app=app)

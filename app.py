@@ -1,9 +1,10 @@
 import os
 
 from flask import Flask
-from database import database
 
-from apps.auth import bp as bp_auth
+from database import database
+from apps.auth.login_manager import configure_login_manager
+from apps.auth.views import bp as bp_auth
 
 
 def get_proper_config_name(mode):
@@ -22,13 +23,17 @@ def create_app(predefined_config=None):
         app.config.from_object(get_proper_config_name(mode))
     else:
         app.config.from_object(predefined_config)
+    # login manager
+    configure_login_manager(app)
+    # blueprint registration
     app.register_blueprint(bp_auth)
-
-    # initialize database
-    database.init_app(app)
 
     return app
 
 
 if __name__ == "__main__":
-    create_app().run()
+    quizzing = create_app()
+    quizzing.run()
+    # initialze database only if this is the main file
+    database.create_database(quizzing)
+
