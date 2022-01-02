@@ -9,7 +9,7 @@ using SqlAlchemy.
 db = SQLAlchemy()
 
 
-def create_database(app):
+def register_database(app):
     db.app = app
     with app.app_context():
         db.init_app(app)

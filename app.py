@@ -23,6 +23,8 @@ def create_app(predefined_config=None):
         app.config.from_object(get_proper_config_name(mode))
     else:
         app.config.from_object(predefined_config)
+    # database configuration
+    database.register_database(app)
     # login manager
     configure_login_manager(app)
     # blueprint registration
@@ -35,5 +37,4 @@ if __name__ == "__main__":
     quizzing = create_app()
     quizzing.run()
     # initialze database only if this is the main file
-    database.create_database(quizzing)
 

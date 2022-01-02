@@ -56,11 +56,25 @@ class RegisterView(MethodView):
         }
 
     def get(self):
-        # TODO - registered user should be redirected to my-account
+        # if user is authorized he should not be able to register
         if current_user.is_authenticated:
             return redirect(url_for('auth.my_account'), code=302)
 
         return render_template(self.template_name, **self.get_context())
+
+    def post(self):
+        # if user is authorized he should not be able to register
+        if current_user.is_authenticated:
+            return redirect(url_for('auth.my_account'), code=302)
+        form = RegistrationForm(request.form)
+        user = form.save()
+        if not user:
+            flash("Something went wrong", "error")
+            return render_template(self.template_name, **{'form': form})
+
+        # after creating an account automatically login user
+        login_user(user)
+        return redirect(url_for('auth.my_account'), code=201)
 
 
 class MyAccountView(MethodView):
