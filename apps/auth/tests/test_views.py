@@ -74,3 +74,30 @@ def test_post_register_authenticated(test_app, user):
     assert response.status_code == 302
     user = User.query.filter_by(username=register_form_data['username']).first()
     assert user is None
+
+
+def test_get_login_not_authenticated(test_app):
+    response = test_app.get(url_for('auth.login'))
+    assert response.status_code == 200
+
+
+def test_get_login_authenticated(test_app, user):
+    login(test_app, user.username, "complexP@ssworD")
+
+    response = test_app.get(url_for('auth.login'))
+    assert response.status_code == 302
+
+
+def test_post_login_not_authenticated_success(test_app):
+    pass
+
+
+def test_post_login_not_authenticated_wrong_password(test_app):
+    pass
+
+
+def test_post_login_authenticated(test_app, user):
+    login_data = {
+        'username': user.username,
+        'password': "complexP@ssworD"
+    }

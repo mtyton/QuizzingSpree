@@ -70,7 +70,7 @@ class RegistrationForm(Form):
 
 class LoginForm(Form):
     username = StringField("Username", [validators.Length(min=4, max=25)])
-    password = PasswordField('New Password', [
+    password = PasswordField('Password', [
         validators.DataRequired()
     ])
     remember_me = BooleanField("Remember Me")

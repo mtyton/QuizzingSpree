@@ -3,7 +3,7 @@
 {% block content %}
 
     <div class="container mt-3">
-        <h1>Registration Form</h1>
+        <h1>Create an account</h1>
         <form method="post">
             {{ form.csrf_token }}
 
@@ -32,7 +32,7 @@
             </div>
 
             <div class="form-check">
-                {{form.accept_tos(class="form-check-inpu", id="flexCheckDefault")}}
+                {{form.accept_tos(class="form-check-input", id="flexCheckDefault")}}
                 {{form.accept_tos.label(class="form-check-label", for="flexCheckDefault")}}
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
