@@ -88,6 +88,18 @@ def test_get_login_authenticated(test_app, user):
     assert response.status_code == 302
 
 
+def test_get_logout_not_authenticated(test_app):
+    response = test_app.get(url_for('auth.logout'))
+    assert response.status_code == 302
+
+
+def test_get_logout_authenticated(test_app, user):
+    login(test_app, user.username, "complexP@ssworD")
+
+    response = test_app.get(url_for('auth.logout'))
+    assert response.status_code == 200
+
+
 def test_post_login_not_authenticated_success(test_app):
     pass
 
