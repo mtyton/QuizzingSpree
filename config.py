@@ -23,7 +23,7 @@ class ProductionConfig(BasicConfig):
     """
     Config to be used on production server
     """
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URI')
     DEBUG = False
 
 

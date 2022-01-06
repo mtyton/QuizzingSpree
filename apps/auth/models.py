@@ -1,4 +1,4 @@
-import sqlalchemy as sa
+import datetime
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -13,7 +13,7 @@ class User(db.Model, UserMixin):
 
     # internal user info
     registered_at = db.Column(
-        db.DateTime, server_default=sa.text("CURDATE()"), nullable=False
+        db.DateTime, nullable=False
     )
     last_login = db.Column(
         db.DateTime, nullable=True
@@ -23,6 +23,10 @@ class User(db.Model, UserMixin):
         self.username = username
         self.email = email
         self.set_password(password)
+        # set initial registered_at - this has to be done here because SOMEHOW
+        # mysql does not support CURDATE() during table creation, source:
+        # https://stackoverflow.com/questions/20461030/current-date-curdate-not-working-as-default-date-value
+        self.registered_at = datetime.date.today()
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
