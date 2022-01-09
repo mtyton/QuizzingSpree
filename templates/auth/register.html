@@ -1,0 +1,46 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1>Create an account</h1>
+        <form method="post">
+            {{ form.csrf_token }}
+
+            <div class="mb-3">
+                <label for="usernameInput">{{form.username.label(class="form-label")}}</label>
+                {{form.username(class="form-control", id="usernameInput")}}
+                <div id="usernameHelp" class="form-text">This username will be visible for other users.</div>
+            </div>
+
+            <div class="mb-3">
+            <label for="emailInput">{{form.email.label(class="form-label")}}</label>
+            {{form.email(class="form-control", id="emailInput")}}
+            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="passwordInput">{{form.password.label(class="form-label")}}</label>
+                {{form.password(class="form-control", id="passwordInput")}}
+                <div id="passwordHelp" class="form-text">#TODO</div>
+            </div>
+
+            <div class="mb-3">
+                <label for="confirmPasswordInput">{{form.confirm.label(class="form-label")}}</label>
+                {{form.confirm(class="form-control", id="confirmPasswordInput")}}
+                <div id="confirmPasswordHelp" class="form-text">Repeat your password.</div>
+            </div>
+
+            <div class="form-check">
+                {{form.accept_tos(class="form-check-input", id="flexCheckDefault")}}
+                {{form.accept_tos.label(class="form-check-label", for="flexCheckDefault")}}
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <input type="submit" value="Register" class="btn btn-lg btn-outline-success">
+            </div>
+
+        </form>
+    </div>
+
+
+{% endblock %}
