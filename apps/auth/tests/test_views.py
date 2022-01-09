@@ -88,28 +88,32 @@ def test_get_login_authenticated(test_app, user):
     assert response.status_code == 302
 
 
-def test_get_logout_not_authenticated(test_app):
-    response = test_app.get(url_for('auth.logout'))
-    assert response.status_code == 302
-
-
-def test_get_logout_authenticated(test_app, user):
-    login(test_app, user.username, "complexP@ssworD")
-
-    response = test_app.get(url_for('auth.logout'))
-    assert response.status_code == 200
-
-
-def test_post_login_not_authenticated_success(test_app):
-    pass
-
-
-def test_post_login_not_authenticated_wrong_password(test_app):
-    pass
-
-
-def test_post_login_authenticated(test_app, user):
+def test_post_login_not_authenticated_success(test_app, user):
     login_data = {
         'username': user.username,
         'password': "complexP@ssworD"
     }
+    response = test_app.post(url_for('auth.login'), data=login_data)
+    assert response.status_code == 302
+
+
+def test_post_login_not_authenticated_wrong_password(test_app, user):
+    login_data = {
+        'username': user.username,
+        'password': "casffssfsworD"
+    }
+    response = test_app.post(url_for('auth.login'), data=login_data)
+    assert response.status_code == 200
+    assert b"No such user or incorrect_password" in response.data
+
+
+def test_post_login_authenticated(test_app, user):
+    login(test_app, user.username, "complexP@ssworD")
+    login_data = {
+        'username': user.username,
+        'password': "complexP@ssworD"
+    }
+    response = test_app.post(url_for('auth.login'), data=login_data)
+    assert response.status_code == 302
+
+

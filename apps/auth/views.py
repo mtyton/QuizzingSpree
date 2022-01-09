@@ -29,6 +29,10 @@ class LoginView(MethodView):
         return render_template(self.template_name, **self.get_context())
 
     def post(self):
+
+        if current_user.is_authenticated:
+            return redirect(url_for('auth.my_account'), code=302)
+
         form = LoginForm(request.form)
         if form.validate():
             user = form.user_instance
@@ -43,13 +47,11 @@ class LogoutView(MethodView):
     methods = ["GET"]
     template_name = "auth/logout.html"
 
+    @login_required
     def get(self):
-        # if user is not authorized he should not be able to logout
-        if current_user.is_authenticated:
-            logout_user()
-            return redirect(url_for('auth.register'), code=200)
-        else:
-            return redirect(url_for('auth.register'), code=302)
+        logout_user()
+        # TODO - should redirect into index page
+        return redirect(url_for('auth.register'), code=302)
 
 
 class RegisterView(MethodView):
