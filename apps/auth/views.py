@@ -22,9 +22,17 @@ class LoginView(MethodView):
         }
 
     def get(self):
+        # if user is authorized he should not be able to login
+        if current_user.is_authenticated:
+            return redirect(url_for('auth.my_account'), code=302)
+
         return render_template(self.template_name, **self.get_context())
 
     def post(self):
+
+        if current_user.is_authenticated:
+            return redirect(url_for('auth.my_account'), code=302)
+
         form = LoginForm(request.form)
         if form.validate():
             user = form.user_instance
