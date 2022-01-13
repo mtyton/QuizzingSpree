@@ -6,6 +6,7 @@ from database import database
 from apps.auth.login_manager import configure_login_manager
 from apps.auth.views import bp as bp_auth
 from apps.website.views import bp as bp_web
+from apps.quiz.views import bp as bp_quiz
 from apps.base.context_processor import logged_user
 
 
@@ -37,6 +38,7 @@ def create_app(predefined_config=None):
     # blueprint registration
     app.register_blueprint(bp_auth)
     app.register_blueprint(bp_web)
+    app.register_blueprint(bp_quiz)
     # finally, add context processors
     app = __configure_context_processors(app)
 
