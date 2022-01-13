@@ -1,43 +1,45 @@
 from database.database import db
 
 
-class Quiz(db.Model):
-
-    __tablename__ = 'quiz'
+class QuizCategory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(150), ) 
+    category_name = db.Column(db.String(150))
+
+    def __init__(self, category_name):
+        self.category_name = category_name
+
+
+class Quiz(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(150), db.ForeignKey('quizcategory.category_name')) 
     difficulty_level = db.Column(db.String(150))
     questions = db.relationship('Question', backref='quiz', lazy=True)
 
     def __init__(self, category, difficulty_level, questions):
         self.category = category
         self.difficulty_level = difficulty_level
-
-
-class QuizCategory(db.Model):
-
-    __tablename__ = 'quiz_category'
-
-    id = db.Column(db.Integer, primary_key=True)
+        self.questions = questions
 
 
 class Question(db.Model):
 
-    __tablename__ = 'question'
-
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(500), db.ForeignKey('answer.text'))
+    answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'))
     question_type = db.Column(db.String(150))
 
-    def __init__(self, category, difficulty_level):
-        self.category = category
-        self.difficulty_level = difficulty_level
+    def __init__(self, answer_id, question_type):
+        self.answer_id = answer_id
+        self.question_type = question_type
 
 
 class Answer(db.Model):
 
-    __tablename__ = 'answer'
-
+    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(500))
     correct = db.Column(db.Boolean)
+
+    def __init__(self, text, correct):
+        self.text = text
+        self.correct = correct
