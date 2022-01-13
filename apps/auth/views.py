@@ -45,7 +45,7 @@ class LogoutView(BasePermissionCheckMethodView):
 
     def get(self):
         logout_user()
-        return redirect(url_for('home'), code=302)
+        return redirect(url_for('website.home'), code=302)
 
 
 class RegisterView(BasePermissionCheckMethodView):
