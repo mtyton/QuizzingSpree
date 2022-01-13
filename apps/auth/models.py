@@ -1,7 +1,8 @@
 import datetime
 
 from flask_login import UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
+
 from database.database import db
 
 
@@ -19,7 +20,7 @@ class User(db.Model, UserMixin):
         db.DateTime, nullable=True
     )
 
-    def __init__(self, username, email, password=None):
+    def __init__(self, username: str, email: str, password=None):
         self.username = username
         self.email = email
         self.set_password(password)
