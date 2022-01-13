@@ -1,9 +1,15 @@
 from database.database import db
 
+from apps.quiz.taxonomies import (
+    QuestionTypeEnum, QuizDifficultyLevelEnum
+)
+
 
 class QuizCategory(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
+
+    slug_name = db.Column(db.String(50))
     category_name = db.Column(db.String(150))
 
     def __init__(self, category_name):
@@ -13,8 +19,17 @@ class QuizCategory(db.Model):
 class Quiz(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(150), db.ForeignKey('quizcategory.category_name')) 
-    difficulty_level = db.Column(db.String(150))
+    title = db.Column(db.String(150))
+
+    category = db.Column(
+        db.ForeignKey('quizcategory.id')
+    )
+    difficulty_level = db.Column(
+        db.Enum(QuizDifficultyLevelEnum),
+        default=QuizDifficultyLevelEnum.MEDIUM
+    )
+
+    description = db.Column(db.String(500))
     questions = db.relationship('Question', backref='quiz', lazy=True)
 
     def __init__(self, category, difficulty_level, questions):
@@ -26,8 +41,13 @@ class Quiz(db.Model):
 class Question(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'))
-    question_type = db.Column(db.String(150))
+    content = db.Column(db.String(250))
+
+    question_type = db.Column(
+        db.Enum(QuestionTypeEnum),
+        default=QuestionTypeEnum.SELECT
+    )
+    answers = db.relationship('Answer', backref='question', lazy=True)
 
     def __init__(self, answer_id, question_type):
         self.answer_id = answer_id
@@ -37,9 +57,10 @@ class Question(db.Model):
 class Answer(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(500))
+
+    content = db.Column(db.String(250))
     correct = db.Column(db.Boolean)
 
-    def __init__(self, text, correct):
-        self.text = text
+    def __init__(self, content: str, correct: bool):
+        self.content = content
         self.correct = correct
