@@ -12,8 +12,10 @@ class QuizCategory(db.Model):
     slug_name = db.Column(db.String(50))
     category_name = db.Column(db.String(150))
 
-    def __init__(self, category_name):
+    def __init__(self, category_name, slug_name, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.category_name = category_name
+        self.slug_name = slug_name
 
 
 class Quiz(db.Model):
@@ -21,8 +23,9 @@ class Quiz(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(150))
 
-    category = db.Column(
-        db.ForeignKey('quizcategory.id')
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category_id = db.Column(
+        db.Integer,  db.ForeignKey('quiz_category.id')
     )
     difficulty_level = db.Column(
         db.Enum(QuizDifficultyLevelEnum),
@@ -32,10 +35,19 @@ class Quiz(db.Model):
     description = db.Column(db.String(500))
     questions = db.relationship('Question', backref='quiz', lazy=True)
 
-    def __init__(self, category, difficulty_level, questions):
-        self.category = category
-        self.difficulty_level = difficulty_level
-        self.questions = questions
+    def __init__(
+            self, author_id: int, title: str, category_id: int,
+            description: str, difficulty_level: QuizDifficultyLevelEnum = None,
+            *args, **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.author_id = author_id
+        self.category_id = category_id
+        self.description = description
+        self.title = title
+        # if difficulty level has not been passed, use field default
+        if not difficulty_level:
+            self.difficulty_level = difficulty_level
 
 
 class Question(db.Model):
@@ -47,11 +59,21 @@ class Question(db.Model):
         db.Enum(QuestionTypeEnum),
         default=QuestionTypeEnum.SELECT
     )
+    quiz_id = db.Column(
+        db.Integer, db.ForeignKey('quiz.id'),
+        nullable=False
+    )
+
     answers = db.relationship('Answer', backref='question', lazy=True)
 
-    def __init__(self, answer_id, question_type):
-        self.answer_id = answer_id
+    def __init__(
+            self, content: str, question_type: QuestionTypeEnum,
+            quiz_id: int, *args, **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.content = content
         self.question_type = question_type
+        self.quiz_id = quiz_id
 
 
 class Answer(db.Model):
@@ -61,6 +83,17 @@ class Answer(db.Model):
     content = db.Column(db.String(250))
     correct = db.Column(db.Boolean)
 
-    def __init__(self, content: str, correct: bool):
+    question_id = db.Column(
+        db.Integer, db.ForeignKey('question.id'),
+        nullable=False
+    )
+
+    def __init__(
+            self, content: str, correct: bool,
+            question_id: int, *args, **kwargs
+    ):
+        super().__init__(*args, **kwargs)
         self.content = content
         self.correct = correct
+        self.question_id = question_id
+

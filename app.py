@@ -9,6 +9,11 @@ from apps.website.views import bp as bp_web
 from apps.quiz.views import bp as bp_quiz
 from apps.base.context_processor import logged_user
 
+# TODO - find better way (using flask-migrate)
+# import models to allow creation during startup
+from apps.auth import models as user_models
+from apps.quiz import models as quiz_models
+
 
 def get_proper_config_name(mode):
     if mode == "development":
@@ -31,14 +36,17 @@ def create_app(predefined_config=None):
         app.config.from_object(get_proper_config_name(mode))
     else:
         app.config.from_object(predefined_config)
-    # database configuration
-    database.register_database(app)
-    # login manager
-    configure_login_manager(app)
+
     # blueprint registration
     app.register_blueprint(bp_auth)
     app.register_blueprint(bp_web)
     app.register_blueprint(bp_quiz)
+
+    # database configuration
+    database.register_database(app)
+    # login manager
+    configure_login_manager(app)
+
     # finally, add context processors
     app = __configure_context_processors(app)
 
