@@ -1,5 +1,5 @@
 @echo off
 
-CALL env.bat
+CALL bin/env.bat
 
 flask run
