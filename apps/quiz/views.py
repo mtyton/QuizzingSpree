@@ -1,7 +1,7 @@
 from flask import Blueprint
 
 from apps.base.views import BasePermissionCheckMethodView
-from apps.quiz.models import QuizCategory
+from apps.quiz.forms import QuizCreationForm
 
 
 bp = Blueprint('quiz', __name__)
@@ -18,8 +18,7 @@ class QuizCreatorReadView(BasePermissionCheckMethodView):
 
     def get_context(self) -> dict:
         return {
-            'categories': QuizCategory.query.all(),
-            'number_of_questions': 1
+            'form': QuizCreationForm()
         }
 
 

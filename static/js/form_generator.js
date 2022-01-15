@@ -37,7 +37,8 @@ class QuestionCreatorRenderer extends BaseQuestionRenderer {
     }
 
     renderTemplate = function() {
-        var template = this.getTemplate();
+        var template, answer_check_id, answer_input_id;
+        template = this.getTemplate()
         template = template.replaceAll(
             "input_id", `question_${this.numberOfElements}`
         )
@@ -45,6 +46,18 @@ class QuestionCreatorRenderer extends BaseQuestionRenderer {
             'answer_container_id', `answer_container_${this.numberOfElements}`
         )
         // add answers id
+        for(var i=1; i<=4; i++) {
+            answer_check_id = `answer_check_${i}`;
+            answer_input_id = `answer_input_${i}`;
+            template = template.replaceAll(
+                `${answer_check_id}`,
+                `${this.numberOfElements}_${answer_check_id}`
+            );
+            template = template.replaceAll(
+                `${answer_input_id}`,
+                `${this.numberOfElements}_${answer_input_id}`
+            );
+        }
         return template;
     }
 
