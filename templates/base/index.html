@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+
+    <div class="bg-image" style="background-image: url('https://wallpapersmug.com/download/1920x1080/4d7d03/light-colors-geometric-pattern-abstract.jpg');
+      height: 200vh;">
+      <div class="container" align="center">
+        <div class="card border-0 shadow my-5">
+          <div class="card-body p-5">
+            <h1 class="fw-light">Welcome to QuizzingSpree!</h1>
+              <p class="lead">Are you looking for a place where you could create your own quizzes?
+                Or maybe you want to solve quizzes created by other people?</p>
+                <p class="lead">
+                  Well, you have come to the right place!
+                </p>
+                <p class="lead">
+                  Click the register button to create an account, or login if you are already a part of the quizzing community. 
+                </p>
+                <div style="height: 50px"></div>
+
+                <div class="col-md-10 text-center mt-3">
+                  {% if current_user.is_authenticated %}
+                    <a class="btn btn-success me-2" href="{{ url_for('auth.logout') }}">Create a Quiz</a>
+                  {% else %}
+                    <a class="btn btn-primary me-2" href="{{ url_for('auth.register') }}">Register</a>
+                    <a class="btn btn-success me-2" href="{{ url_for('auth.login') }}">Login</a>
+                  {% endif %}
+                </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+        
+        
+    </div>
+{% endblock %}

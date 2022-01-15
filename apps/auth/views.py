@@ -2,78 +2,64 @@ from flask.typing import ResponseReturnValue
 from flask import (
     render_template, Blueprint, redirect, url_for, request, flash
 )
-from flask_login import current_user, login_user, logout_user, login_required
-from flask.views import View, MethodView
+from flask_login import current_user, login_user, logout_user
+from flask.views import MethodView
 
-
+from apps.base.views import BasePermissionCheckMethodView
 from apps.auth.forms import RegistrationForm, LoginForm
+from apps.auth.permissions import (
+    IsAuthenticatedPermission, IsNotAuthenticatedPermission
+)
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-class LoginView(MethodView):
+class LoginView(BasePermissionCheckMethodView):
     methods = ["GET", "POST"]
     template_name = "auth/login.html"
+
+    permissions = [IsNotAuthenticatedPermission(), ]
 
     def get_context(self) -> dict:
         return {
             'form': LoginForm()
         }
 
-    def get(self):
-        # if user is authorized he should not be able to login
-        if current_user.is_authenticated:
-            return redirect(url_for('auth.my_account'), code=302)
-
-        return render_template(self.template_name, **self.get_context())
-
     def post(self):
-
-        if current_user.is_authenticated:
-            return redirect(url_for('auth.my_account'), code=302)
-
         form = LoginForm(request.form)
         if form.validate():
             user = form.user_instance
             login_user(user)
-            return redirect(url_for('auth.my_account'), code=302)
+            return redirect(url_for('auth.my_account'), code=301)
 
         flash("No such user or incorrect_password", "error")
         return self.get()
 
 
-class LogoutView(MethodView):
+class LogoutView(BasePermissionCheckMethodView):
     methods = ["GET"]
     template_name = "auth/logout.html"
 
-    @login_required
+    permissions = [IsAuthenticatedPermission(), ]
+
     def get(self):
         logout_user()
-        # TODO - should redirect into index page
-        return redirect(url_for('auth.register'), code=302)
+        return redirect(url_for('website.home'), code=302)
 
 
-class RegisterView(MethodView):
+class RegisterView(BasePermissionCheckMethodView):
     methods = ["GET", "POST"]
     template_name = "auth/register.html"
+
+    permissions = [IsNotAuthenticatedPermission(), ]
 
     def get_context(self) -> dict:
         return {
             'form': RegistrationForm()
         }
 
-    def get(self):
-        # if user is authorized he should not be able to register
-        if current_user.is_authenticated:
-            return redirect(url_for('auth.my_account'), code=302)
-
-        return render_template(self.template_name, **self.get_context())
-
     def post(self):
-        # if user is authorized he should not be able to register
-        if current_user.is_authenticated:
-            return redirect(url_for('auth.my_account'), code=302)
         form = RegistrationForm(request.form)
         user = form.save()
         if not user:
@@ -85,14 +71,11 @@ class RegisterView(MethodView):
         return redirect(url_for('auth.my_account'), code=201)
 
 
-class MyAccountView(MethodView):
+class MyAccountView(BasePermissionCheckMethodView):
     methods = ["GET"]
+    template_name = "auth/account.html"
 
-    def get(self):
-        if not current_user.is_authenticated:
-            return redirect(url_for('auth.register'), code=302)
-
-        return render_template("auth/account.html")
+    permissions = [IsAuthenticatedPermission(), ]
 
 
 bp.add_url_rule('/login', view_func=LoginView.as_view('login'))
