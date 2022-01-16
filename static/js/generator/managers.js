@@ -15,6 +15,7 @@ class QuestionManager {
         template = $(me.questions[0].itemID).html();
 
         // TODO - change this if we want to allow question deletion
+        // TODO - fix question name
         questionNumber = me.questions.length + 1;
         template = template.replaceAll(
             'question_0', `question_${questionNumber}`

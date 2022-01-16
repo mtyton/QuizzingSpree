@@ -79,6 +79,7 @@ def quiz_creation_data(
     db.session.commit()
 
     db.session.add(user)
+    db.session.add(category)
     return {
         'title': "TEstQuiz",
         'author_id': user.id,
@@ -90,3 +91,13 @@ def quiz_creation_data(
         ]
     }
 
+
+# TODO - this does not work for testing :(
+@pytest.fixture(scope="session")
+def quiz_request_data(
+        test_app, user, db,
+        quiz_creation_data
+):
+    data = quiz_creation_data.copy()
+    data['category'] = data.pop('category_id')
+    return data
