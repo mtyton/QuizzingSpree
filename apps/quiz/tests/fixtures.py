@@ -67,23 +67,25 @@ def select_question_data():
 
 
 @pytest.fixture(scope="session")
-def quiz_creation_data(
-        test_app, user, db,
-        select_question_data, select_multiple_question_data
-):
+def category_obj(user, db):
     category = quiz_models.QuizCategory(
         category_name="testCategory",
         slug_name="test_category"
     )
     db.session.add(category)
     db.session.commit()
+    return category
 
-    db.session.add(user)
-    db.session.add(category)
+
+@pytest.fixture(scope="session")
+def quiz_creation_data(
+        test_app, user, db, category_obj,
+        select_question_data, select_multiple_question_data
+):
     return {
         'title': "TEstQuiz",
         'author_id': user.id,
-        'category_id': category.id,
+        'category_id': category_obj.id,
         'description': "TestDEscription",
         'questions': [
             select_question_data.copy(), select_multiple_question_data.copy(),
@@ -92,12 +94,18 @@ def quiz_creation_data(
     }
 
 
-# TODO - this does not work for testing :(
 @pytest.fixture(scope="session")
 def quiz_request_data(
-        test_app, user, db,
-        quiz_creation_data
+        test_app, user, db, category_obj,
 ):
-    data = quiz_creation_data.copy()
-    data['category'] = data.pop('category_id')
-    return data
+    return {
+        'title': "TEstQuiz",
+        'category': category_obj.id,
+        'description': "TestDEscription",
+        "questions-0-question_type": "select_multiple",
+        "questions-0-content": "test",
+        "questions-0-answers-0-correct": "y",
+        "questions-0-answers-0-content": "test",
+        "questions-0-answers-1-content": "test",
+        "questions-0-answers-2-content": "est",
+    }

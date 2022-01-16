@@ -61,7 +61,7 @@ def request_context(app):
     return app.test_request_context
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def user(session):
     usr = User(
         username="testUser01", email="testUser1@test.com",

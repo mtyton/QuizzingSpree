@@ -1,3 +1,4 @@
+// TODO - refactor this module
 
 class QuestionManager {
 
@@ -16,7 +17,8 @@ class QuestionManager {
 
         // TODO - change this if we want to allow question deletion
         // TODO - fix question name
-        questionNumber = me.questions.length + 1;
+        questionNumber = me.questions.length;
+        // TODO - add proper code explanation
         template = template.replaceAll(
             'question_0', `question_${questionNumber}`
         )
@@ -29,6 +31,15 @@ class QuestionManager {
         template = template.replaceAll(
             'add_answer_0', `add_answer_${questionNumber}`
         )
+        template = template.replaceAll(
+            'questions-0-question_type',
+            `questions-${questionNumber}-question_type`
+        )
+        template = template.replaceAll(
+            'questions-0-content',
+            `questions-${questionNumber}-content`
+        )
+
         return template;
     }
 
@@ -49,7 +60,7 @@ class QuestionManager {
         answers = answerBlock.find($(".input-group"));
 
         // let's create basic answer ID suffix
-        baseAnswerIDSuffix = `${questionNumber}_${answers.length+1}`;
+        baseAnswerIDSuffix = `${questionNumber}_${answers.length}`;
 
         template = template.replaceAll(
             'answer_0_0', `answer_${baseAnswerIDSuffix}`
@@ -60,6 +71,16 @@ class QuestionManager {
         template = template.replaceAll(
             'answer_check_0_0', `answer_check_${baseAnswerIDSuffix}`
         )
+        // also replace flask names
+        template = template.replaceAll(
+            'questions-0-answers-0-correct',
+            `questions-${questionNumber}-answers-${answers.length}-correct`
+        )
+        template = template.replaceAll(
+            'questions-0-answers-0-content',
+            `questions-${questionNumber}-answers-${answers.length}-content`
+        )
+
         return template;
     }
 

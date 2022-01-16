@@ -51,8 +51,6 @@ class QuizFactory:
     def __create_question(
             self, quiz: quiz_models.Quiz, questions_data: List[dict]
     ) -> None:
-        import ipdb
-        ipdb.set_trace()
         for question_kwargs in questions_data:
             factory = self.question_factories[
                 question_kwargs.get('question_type')

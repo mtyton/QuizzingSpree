@@ -12,7 +12,9 @@
     <h3>Answers: </h3>
     <div class="card">
         <ul class="list-group list-group-flush" id="question_0_answers">
-            {% include 'quiz/partials/new_answer.html' %}
+            {% with answer_form=question_form.answers[0] %}
+                {% include 'quiz/partials/new_answer.html' %}
+            {% endwith %}
         </ul>
 
     </div>

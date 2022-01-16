@@ -17,7 +17,7 @@ class AnswerForm(Form):
         [validators.data_required(), validators.length(max=250)]
     )
     correct = BooleanField(
-        u"Answer correctness", [validators.data_required(), ], default=False
+        u"Answer correctness", default=False
     )
 
     def get_processed_data(self):
@@ -77,8 +77,8 @@ class QuizCreationForm(Form):
             (q.id, q.category_name)
             for q in QuizCategory.query.order_by('category_name')
         ]
-        import ipdb
-        ipdb.set_trace()
+
+    # TODO - custom validate function
 
     def get_processed_data(self):
 

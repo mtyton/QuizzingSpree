@@ -27,9 +27,17 @@ class BaseTemplateRenderMixin(object):
         return render_template(self.template_name, **self.get_context())
 
 
+class PostFailureRenderMixin(object):
+    template_name: str
+
+    def _unsuccessful_post_response(self, context: dict):
+        assert context is not None
+        return render_template(self.template_name, **context)
+
+
 class BasePermissionCheckMethodView(BaseTemplateRenderMixin, MethodView):
 
-    # TODO - allow define this in config
+    # TODO - allow to define this in config
     DEFAULT_PERMISSIONS_FAIL_URL_NAME: str = 'website.home'
 
     # permissions lack messages

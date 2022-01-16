@@ -1,8 +1,14 @@
-from flask import Blueprint, Response, redirect, url_for, request
+from flask import (
+    Blueprint, Response, redirect, url_for, request,
+    flash
+)
 
-from apps.base.views import BasePermissionCheckMethodView
+from apps.base.views import (
+    BasePermissionCheckMethodView, PostFailureRenderMixin
+)
 from apps.quiz.forms import QuizCreationForm
 from apps.quiz.quiz_factory import QuizFactory
+from apps.auth.permissions import IsAuthenticatedPermission
 
 
 bp = Blueprint('quiz', __name__)
@@ -13,9 +19,15 @@ class QuizListView(BasePermissionCheckMethodView):
     template_name = "quiz/quiz_list.html"
 
 
-class QuizCreatorReadView(BasePermissionCheckMethodView):
+class QuizCreatorReadView(
+    PostFailureRenderMixin, BasePermissionCheckMethodView
+):
 
     template_name = "quiz/quiz_create.html"
+
+    permissions_fail_url_name = "auth.login"
+    permission_lack_message = "You have to be logged in to create a quiz"
+    permissions = [IsAuthenticatedPermission(), ]
 
     def get_context(self) -> dict:
         return {
@@ -23,14 +35,23 @@ class QuizCreatorReadView(BasePermissionCheckMethodView):
         }
 
     def post(self) -> Response:
-        # TODO - add permission check
-        print(request.form)
         form = QuizCreationForm(request.form)
         processed_data = form.get_processed_data()
+        if not form.validate():
+            flash("Something went wrong, check your form", "errors")
+            return self._unsuccessful_post_response({'form': form})
 
         factory = QuizFactory()
-        # quiz = factory.create_quiz(processed_data)
 
+        quiz = factory.create_quiz(processed_data)
+        if not quiz and factory.errors:
+            for error in factory.errors:
+                # TODO add assign error to field
+                flash(error.message, "errors")
+
+            return self._unsuccessful_post_response({'form': form})
+
+        flash(f"You quiz {quiz} has been successfully created", "success")
         return redirect(url_for('website.home'), code=302)
 
 
