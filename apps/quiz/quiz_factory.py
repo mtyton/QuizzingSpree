@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from flask_login import current_user
 
 from database.database import db
@@ -11,6 +11,7 @@ from apps.quiz.validators import DataEntriesRequiredValidator
 # TODO - add sepparate ExceptionType for factories
 class QuizFactory:
 
+    # dict of question_factories, there can be multiple factories
     question_factories: dict
     _errors: List[dict]
 
@@ -20,6 +21,10 @@ class QuizFactory:
     ]
 
     def attach_factory(self, key, factory_class):
+        """
+        This method allows attach the factory to this factory,
+        to allow using multiple factories.
+        """
         self.question_factories[key] = factory_class()
 
     @property
@@ -41,6 +46,10 @@ class QuizFactory:
         )
 
     def _validate_data(self, data: dict):
+        """
+        Basic data validation, this method check if all fields has been filled
+        This i being done using external validator.
+        """
         self._errors = DataEntriesRequiredValidator.validate(
             self.REQUIRED_QUIZ_KEYS, data
         )
@@ -51,6 +60,9 @@ class QuizFactory:
     def __create_question(
             self, quiz: quiz_models.Quiz, questions_data: List[dict]
     ) -> None:
+        """
+        Creates questions ans answers for those questions for given quiz.
+        """
         for question_kwargs in questions_data:
             factory = self.question_factories[
                 question_kwargs.get('question_type')
@@ -60,11 +72,15 @@ class QuizFactory:
             except AssertionError as e:
                 self._errors += factory.get_errors()
 
-    def create_quiz(self, data: dict) -> quiz_models.Quiz:
+    def create_quiz(self, data: dict) -> Union[quiz_models.Quiz, None]:
+        """
+        This method simply creates Quiz instance with
+        questions and answers for those questions.
+        If something goes wrong, it'll return none, otherewise it'll
+        return Quiz instance.
+        """
         if not self._validate_data(data):
-            raise AssertionError(
-                self.errors[0]['message']
-            )
+            return None
 
         questions_data = data.pop('questions')
         quiz = quiz_models.Quiz(**data)
@@ -74,9 +90,7 @@ class QuizFactory:
         self.__create_question(quiz, questions_data)
 
         if len(self.errors):
-            raise AssertionError(
-                self.errors[0]['message']
-            )
+            return None
 
         # commit database changes
         db.session.commit()
@@ -110,6 +124,9 @@ class BaseQuestionFactory:
     def _create_answers(
             self, question: quiz_models.Question, data: dict
     ) -> List[quiz_models.Answer]:
+        """
+        This method simply creates answers for given questions.
+        """
         answers = []
         for item in data.get('answers'):
             answer = quiz_models.Answer(question_id=question.id, **item)
@@ -122,6 +139,10 @@ class BaseQuestionFactory:
     def create_question(
             self, quiz: quiz_models.Quiz, data: dict
     ) -> quiz_models.Question:
+        """
+        This method simply creates Question object.
+        """
+        # if data is not valid, raise proper error
         if not self._validate_data(data):
             raise AssertionError(
                 self.get_errors()[0]['message']
@@ -131,8 +152,8 @@ class BaseQuestionFactory:
             quiz_id=quiz.id,
             **self._cleaned_data(data)
         )
-        db.session.add(question)
 
+        db.session.add(question)
         answers = self._create_answers(question, data)
         for answer in answers:
             question.answers.append(answer)

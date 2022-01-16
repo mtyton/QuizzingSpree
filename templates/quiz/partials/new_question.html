@@ -1,11 +1,10 @@
-<div class="container mt-5 mb-5  border border-light" id="question_0">
-
+<div class="container mt-5 mb-5  border border-light " id="question_0" >
     <div class="mb-3">
         {{question_form.question_type(class="form-select")}}
     </div>
 
     <div class="mb-3">
-        <label for="questionInput_0">{{question_form.content.label}}</label>
+        <label for=a"questionInput_0">{{question_form.content.label}}</label>
         {{question_form.content(class="form-control", id="questionInput_0")}}
     </div>
 
@@ -16,7 +15,6 @@
                 {% include 'quiz/partials/new_answer.html' %}
             {% endwith %}
         </ul>
-
     </div>
     <div class="d-grid gap-2 col-6 mx-auto mt-2 mb-5">
       <button class="btn btn-success" type="button" id="add_answer_0">

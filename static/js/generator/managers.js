@@ -1,46 +1,77 @@
 // TODO - refactor this module
 
+class BaseTemplateRenderer {
+
+    constructor() {
+        var me = this;
+        me.valueDict = {};
+    }
+
+    fillDictionaries = function() {
+
+    }
+
+    renderTemplate = function (templateID) {
+        var me = this,
+            template = $(templateID).html();
+
+        for (var [key, value] of Object.entries(me.valueDict)) {
+            template = template.replaceAll(key, value)
+        }
+        return template
+    }
+
+}
+
+
+class QuestionTemplateRenderer extends BaseTemplateRenderer {
+
+    fillDictionaries = function(questionNumber) {
+        var me = this;
+        me.valueDict = {
+            'question_0': `question_${questionNumber}`,
+            'questionInput_0': `questionInput_${questionNumber}`,
+            'question_0_answers': `question_${questionNumber}_answers`,
+            'add_answer_0': `add_answer_${questionNumber}`,
+            'questions-0-question_type': `questions-${questionNumber}-question_type`,
+            'questions-0-content': `questions-${questionNumber}-content`
+        }
+    }
+
+}
+
+
+class AnswerTemplateRenderer extends BaseTemplateRenderer {
+    fillDictionaries = function(questionNumber, answerNumber) {
+        var me = this,
+            baseAnswerIDSuffix = `${questionNumber}_${answerNumber}`;
+
+        me.valueDict = {
+            'answer_0_0': `answer_${baseAnswerIDSuffix}`,
+            'answer_input_0_0': `answer_input_${baseAnswerIDSuffix}`,
+            'answer_check_0_0': `answer_check_${baseAnswerIDSuffix}`,
+            'questions-0-answers-0-correct': `questions-${questionNumber}-answers-${answerNumber}-correct`,
+            'questions-0-answers-0-content': `questions-${questionNumber}-answers-${answerNumber}-content`
+        }
+    }
+}
+
+
 class QuestionManager {
 
     constructor() {
         var me = this;
-        me.questions = [new Question("#question_0")]
+        me.questions = ["#question_0", ]
+        me.answerRenderer = new AnswerTemplateRenderer();
+        me.questionRenderer = new QuestionTemplateRenderer();
     }
 
-    getAndRenderQuestionTemplate = function() {
+    getCurrentQuestionNumber = function() {
         var me = this,
-            template, questionNumber;
-
-        // we should always download first question, because
-        // it should be always visible
-        template = $(me.questions[0].itemID).html();
-
-        // TODO - change this if we want to allow question deletion
-        // TODO - fix question name
-        questionNumber = me.questions.length;
-        // TODO - add proper code explanation
-        template = template.replaceAll(
-            'question_0', `question_${questionNumber}`
-        )
-        template = template.replaceAll(
-            'questionInput_0', `questionInput_${questionNumber}`
-        )
-        template = template.replaceAll(
-            'question_0_answers', `question_${questionNumber}_answers`
-        )
-        template = template.replaceAll(
-            'add_answer_0', `add_answer_${questionNumber}`
-        )
-        template = template.replaceAll(
-            'questions-0-question_type',
-            `questions-${questionNumber}-question_type`
-        )
-        template = template.replaceAll(
-            'questions-0-content',
-            `questions-${questionNumber}-content`
-        )
-
-        return template;
+            number, lastID;
+        lastID = me.questions[me.questions.length-1];
+        number = parseInt(lastID.split("_")[1]);
+        return number
     }
 
     addQuestion = function() {
@@ -48,51 +79,29 @@ class QuestionManager {
             questionWrapper, questionTemplate;
 
         questionWrapper = $("#question-container")
-        questionTemplate = me.getAndRenderQuestionTemplate();
+        me.questionRenderer.fillDictionaries(
+            me.getCurrentQuestionNumber()
+        )
+        questionTemplate = me.questionRenderer.renderTemplate(
+            me.questions[0]
+        );
         questionWrapper.append(questionTemplate);
-    }
-
-    getAndRenderAnswerTemplate = function (questionNumber, answerBlock) {
-        var me = this,
-            template, answers, baseAnswerIDSuffix;
-        template = $(`#answer_0_0`).html();
-        // get block size
-        answers = answerBlock.find($(".input-group"));
-
-        // let's create basic answer ID suffix
-        baseAnswerIDSuffix = `${questionNumber}_${answers.length}`;
-
-        template = template.replaceAll(
-            'answer_0_0', `answer_${baseAnswerIDSuffix}`
-        )
-        template = template.replaceAll(
-            'answer_input_0_0', `answer_input_${baseAnswerIDSuffix}`
-        )
-        template = template.replaceAll(
-            'answer_check_0_0', `answer_check_${baseAnswerIDSuffix}`
-        )
-        // also replace flask names
-        template = template.replaceAll(
-            'questions-0-answers-0-correct',
-            `questions-${questionNumber}-answers-${answers.length}-correct`
-        )
-        template = template.replaceAll(
-            'questions-0-answers-0-content',
-            `questions-${questionNumber}-answers-${answers.length}-content`
-        )
-
-        return template;
     }
 
     addAnswerToQuestion = function(questionNumber) {
         var me = this,
-            answerBlockID, answerBlock, templateAnswer;
+            answerBlock, templateAnswer, answers;
 
-        answerBlockID = `#question_${questionNumber}_answers`;
-        answerBlock = $(answerBlockID);
-        templateAnswer = me.getAndRenderAnswerTemplate(
-            questionNumber, answerBlock
-        );
+        answerBlock = $(`#question_${questionNumber}_answers`);
+        answers = answerBlock.find($(".input-group"));
+
+        me.answerRenderer.fillDictionaries(
+            questionNumber, answers.length
+        )
+
+        templateAnswer = me.answerRenderer.renderTemplate(
+            "#answer_0_0"
+        )
         answerBlock.append(templateAnswer);
 
     }

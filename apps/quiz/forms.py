@@ -20,7 +20,11 @@ class AnswerForm(Form):
         u"Answer correctness", default=False
     )
 
-    def get_processed_data(self):
+    def get_processed_data(self) -> dict:
+        """
+        This method returns data processed by form,
+        formatted in a way that it'll be provided into QuizFactory.
+        """
         return {
             'content': self.content.data,
             'correct': self.correct.data
@@ -43,7 +47,16 @@ class QuestionForm(Form):
         min_entries=1, max_entries=6
     )
 
-    def get_processed_data(self):
+    def validate(self, extra_validators=None) -> bool:
+        valid = super().validate(extra_validators)
+        valid = valid & self.answers.validate(extra_validators)
+        return valid
+
+    def get_processed_data(self) -> dict:
+        """
+        This method returns data processed by form,
+        formatted in a way that it'll be provided into QuizFactory.
+        """
         return {
             'question_type': self.question_type.data,
             'content': self.content.data,
@@ -78,10 +91,16 @@ class QuizCreationForm(Form):
             for q in QuizCategory.query.order_by('category_name')
         ]
 
-    # TODO - custom validate function
+    def validate(self, extra_validators=None) -> bool:
+        valid = super().validate(extra_validators)
+        valid = valid & self.questions.validate(extra_validators)
+        return valid
 
-    def get_processed_data(self):
-
+    def get_processed_data(self) -> dict:
+        """
+        This method returns data processed by form,
+        formatted in a way that it'll be provided into QuizFactory.
+        """
         return {
             'title': self.title.data,
             'author_id': current_user.id,

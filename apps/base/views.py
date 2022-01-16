@@ -31,6 +31,9 @@ class PostFailureRenderMixin(object):
     template_name: str
 
     def _unsuccessful_post_response(self, context: dict):
+        """
+        This method may be invoked if post request fails
+        """
         assert context is not None
         return render_template(self.template_name, **context)
 
