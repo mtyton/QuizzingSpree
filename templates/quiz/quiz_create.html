@@ -1,0 +1,54 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container">
+    <form id="quiz_create_form" method="POST">
+        {{ form.csrf_token }}
+        <div class="mb-3">
+            <label for="titleInput">{{form.title.label}}</label>
+            {{form.title(class="form-control", id="titleInput")}}
+            <div id="titleHelp" class="form-text">Enter you quiz title</div>
+        </div>
+
+        <div class="mb-3">
+            {{form.category(class="form-select")}}
+        </div>
+
+
+        <div class="mb-3">
+            <label for="descInput">{{form.description.label}}</label>
+            {{form.description(class="form-control", id="descInput")}}
+            <div id="usernameHelp" class="form-text">Short description of your quiz</div>
+        </div>
+
+        <div class="mt-3">
+            <h3>Questions: </h3>
+            <div id="question-container">
+                {% with question_form=form.questions[0] %}
+                    {% include 'quiz/partials/new_question.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row g-0 mt-5">
+            <div class="col-sm-6 col-md-12 bg-primary p-2 text-dark bg-opacity-50 text-center rounded-pill"
+                id="question-add-btn">
+              <h1 class="bi bi-plus-square">    Add question</h1>
+            </div>
+        </div>
+
+        <input type="submit" value="Create Quiz!">
+    </form>
+
+    <div class="visually-hidden" id="question-template-container">
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+{% block scriptextras %}
+    <script src="{{ url_for('static', filename='js/generator/managers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/generator/managables.js') }}"></script>
+{% endblock %}
