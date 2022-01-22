@@ -82,6 +82,8 @@ def quiz_creation_data(
         test_app, user, db, category_obj,
         select_question_data, select_multiple_question_data
 ):
+    # user has to be add into the session to be accessible in tests
+    db.session.add(user)
     return {
         'title': "TEstQuiz",
         'author_id': user.id,
