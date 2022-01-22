@@ -1,5 +1,6 @@
-from database.database import db
+from typing import List
 
+from database.database import db
 from apps.quiz.taxonomies import (
     QuestionTypeEnum, QuizDifficultyLevelEnum
 )
@@ -74,6 +75,16 @@ class Question(db.Model):
         self.content = content
         self.question_type = question_type
         self.quiz_id = quiz_id
+
+    def get_all_answers(self) -> List[tuple]:
+        """
+        Simple method which returns a list of tuples, prepared to be choices
+        :return:
+        """
+        choices = []
+        for answer in self.answers:
+            choices.append((answer.id, answer.content))
+        return choices
 
 
 class Answer(db.Model):

@@ -6,8 +6,9 @@ from flask import (
 from apps.base.views import (
     BasePermissionCheckMethodView, PostFailureRenderMixin
 )
-from apps.quiz.forms import QuizCreationForm
+from apps.quiz.forms import QuizCreationForm, QuizSolverForm
 from apps.quiz.quiz_factory import QuizFactory
+from apps.quiz.models import Quiz
 from apps.auth.permissions import IsAuthenticatedPermission
 
 
@@ -17,6 +18,18 @@ bp = Blueprint('quiz', __name__)
 class QuizListView(BasePermissionCheckMethodView):
 
     template_name = "quiz/quiz_list.html"
+
+
+class QuizSolverView(BasePermissionCheckMethodView):
+
+    template_name = "quiz/quiz_solve.html"
+
+    def get_context(self, *args, **kwargs) -> dict:
+        quiz = Quiz.query.filter_by(id=kwargs.get('quiz_id')).first()
+        form = QuizSolverForm(quiz=quiz)
+        return {
+            'form': form
+        }
 
 
 class QuizCreatorReadView(
@@ -29,7 +42,7 @@ class QuizCreatorReadView(
     permission_lack_message = "You have to be logged in to create a quiz"
     permissions = [IsAuthenticatedPermission(), ]
 
-    def get_context(self) -> dict:
+    def get_context(self, *args, **kwargs) -> dict:
         return {
             'form': QuizCreationForm()
         }
@@ -58,4 +71,7 @@ class QuizCreatorReadView(
 bp.add_url_rule('/quiz-list', view_func=QuizListView.as_view('quiz_list'))
 bp.add_url_rule(
     '/quiz-create', view_func=QuizCreatorReadView.as_view('quiz_create')
+)
+bp.add_url_rule(
+    '/quiz-solve/<quiz_id>/', view_func=QuizSolverView.as_view('quiz_solve')
 )

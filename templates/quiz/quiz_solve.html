@@ -1,0 +1,14 @@
+<form method="POST" action="">
+    {% for question in form.questions %}
+        <div class="card visually-hidden">
+            <div class="card-body">
+                <h5 class="card-title">{{question.content}}</h5>
+                 <div class="mb-3">
+                    <label for="{{question.id}}">Answer: </label>
+                    {{question.answer(class="form-control")}}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <input type="submit" value="Send Responses"/>
+</form>
