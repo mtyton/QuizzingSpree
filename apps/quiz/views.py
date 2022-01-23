@@ -20,21 +20,11 @@ class QuizListView(BasePermissionCheckMethodView):
     template_name = "quiz/quiz_list.html"
 
     def get_context(self) -> dict:
-        quizzes = Quiz.query.all()
-        max_page = int(len(quizzes) / self.QUIZZES_PER_PAGE)
         page = request.args.get('page', default=1, type=int)
-
-        # Validate page number.
-        page = max(1, page)
-        page = min(max_page, page)
-        first_quiz = (page - 1) * self.QUIZZES_PER_PAGE
-        quizzes = quizzes[first_quiz:first_quiz + self.QUIZZES_PER_PAGE]
+        pagination = Quiz.query.paginate(page, self.QUIZZES_PER_PAGE)
 
         return {
-            'quizzes': quizzes,
-            'pages': range(1, max_page + 1),
-            'currentPage': page,
-            'maxPage': max_page,
+            'pagination': pagination,
         }
 
 

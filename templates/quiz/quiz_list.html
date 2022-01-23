@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container mt-5">
 
-  {% for quiz in quizzes %}
+  {% for quiz in pagination.items %}
     <div class="row g-0 border border-light border-4 mt-4">
       <div class="col-6 col-md-4 border-right border-dark border-4">
         <img src="{{ url_for('static', filename='images/test_image.jpg') }}"
@@ -27,25 +27,25 @@
     </div>
   {% endfor %}
 
-  {% if maxPage > 1 %}
+  {% if pagination.pages > 1 %}
     <nav aria-label="Page navigation example" class="mt-5">
       <ul class="pagination pagination-lg justify-content-center">
-        {% if currentPage > 1 %}
-          <li class="page-item"><a class="page-link" href=" {{ url_for('quiz.quiz_list', page=(currentPage - 1)) }}">Previous</a></li>
+        {% if pagination.page > 1 %}
+          <li class="page-item"><a class="page-link" href=" {{ url_for('quiz.quiz_list', page=(pagination.page - 1)) }}">Previous</a></li>
         {% else %}
-          <li class="page-item"><span class="page-link">Previous</span></li>
+          <li class="page-item disabled"><span class="page-link">Previous</span></li>
         {% endif %}
-        {% for p in pages %}
-          {% if currentPage != p %}
+        {% for p in pagination.iter_pages() %}
+          {% if p != pagination.page %}
             <li class="page-item"><a class="page-link" href="{{ url_for('quiz.quiz_list', page=p) }}">{{ p }}</a></li>
           {% else %}
             <li class="page-item active"><span class="page-link">{{ p }}</span></li>
           {% endif %}
         {% endfor %}
-        {% if currentPage < maxPage %}
-          <li class="page-item"><a class="page-link" href="{{ url_for('quiz.quiz_list', page=(currentPage + 1)) }}">Next</a></li>
+        {% if pagination.page < pagination.pages %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('quiz.quiz_list', page=(pagination.page + 1)) }}">Next</a></li>
         {% else %}
-          <li class="page-item"><span class="page-link">Next</span></li>
+          <li class="page-item disabled"><span class="page-link">Next</span></li>
         {% endif %}
       </ul>
     </nav>
