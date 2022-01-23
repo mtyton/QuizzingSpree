@@ -12,6 +12,8 @@ from apps.base.tests.test_utilities import login, logout
 from apps.quiz.models import Quiz
 
 
+# testing creator views
+
 def test_post_create_quiz_view_success(db, test_app, quiz_request_data, user):
     login(test_app, user.username, "complexP@ssworD")
     data = quiz_request_data.copy()
@@ -25,6 +27,7 @@ def test_post_create_quiz_view_success(db, test_app, quiz_request_data, user):
     quiz = Quiz.query.filter_by(title="FirstSuccessQuiz").first()
     assert quiz is not None
     assert response.status_code == 302
+    logout(test_app)
 
 
 def test_post_create_quiz_view_missing_data(
@@ -44,6 +47,7 @@ def test_post_create_quiz_view_missing_data(
         data=data
     )
     assert response.status_code == 200
+    logout(test_app)
     # TODO
     # assert b"" in response.data
 
@@ -51,7 +55,6 @@ def test_post_create_quiz_view_missing_data(
 def test_post_create_quiz_view_not_authenticated(
         db, test_app, quiz_request_data, user
 ):
-    logout(test_app)
     data = quiz_request_data.copy()
     data['title'] = "SecondSuccessQuiz"
 
@@ -63,3 +66,27 @@ def test_post_create_quiz_view_not_authenticated(
     quiz = Quiz.query.filter_by(title="SecondSuccessQuiz").first()
     assert quiz is None
     assert response.status_code == 301
+
+
+# Testing solver views
+
+def test_get_question_solver_not_authenticated(
+    db, test_app, quiz_obj, user
+):
+    response = test_app.get(
+        url_for('quiz.quiz_solve', **{'quiz_id': quiz_obj.id})
+    )
+    assert response.status_code == 301
+
+
+def test_get_question_solver_authenticated(
+    db, test_app, quiz_obj, user
+):
+    login(test_app, user.username, "complexP@ssworD")
+    response = test_app.get(
+        url_for('quiz.quiz_solve', **{'quiz_id': quiz_obj.id})
+    )
+    assert response.status_code == 200
+    logout(test_app)
+
+# TODO - write tests for post

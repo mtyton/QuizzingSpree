@@ -121,9 +121,16 @@ class BaseQuestionSolverForm(Form):
 
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question', None)
+        self.question = question
         self.content = question.content
         super().__init__(*args, **kwargs)
         self.answer.choices = question.get_all_answers()
+
+    def get_processed_data(self) -> dict:
+        return {
+            'question': self.question,
+            'answer': self.answer.data
+        }
 
 
 # now we have to implement each specific question type
@@ -150,18 +157,32 @@ class QuizSolverForm(Form):
     }
 
     def _initialize_quiz(self, quiz: Quiz) -> None:
-        for question in quiz.questions:
+        for number, question in enumerate(quiz.questions):
             form_class = self.question_form_type_map[question.question_type]
             self.questions.entries.append(
-                form_class(**{'question': question})
+                form_class(**{
+                    'question': question,
+                    'id': f'question-{number}-form'
+                })
             )
-        print(self.questions.entries)
 
     def __init__(self, quiz: Quiz, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._initialize_quiz(quiz)
 
+    def validate(self, extra_validators=None) -> bool:
+        return self.questions.validate(extra_validators)
+
     questions = FieldList(
         FormField(BaseQuestionSolverForm, label='Questions'),
         min_entries=0, max_entries=250
     )
+
+    def get_processed_data(self) -> dict:
+        import ipdb
+        ipdb.set_trace()
+        return {
+            'questions': [
+                question.get_processed_data for question in self.questions
+            ]
+        }

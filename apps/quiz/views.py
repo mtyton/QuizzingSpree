@@ -23,13 +23,23 @@ class QuizListView(BasePermissionCheckMethodView):
 class QuizSolverView(BasePermissionCheckMethodView):
 
     template_name = "quiz/quiz_solve.html"
+    permissions = [IsAuthenticatedPermission(), ]
 
     def get_context(self, *args, **kwargs) -> dict:
         quiz = Quiz.query.filter_by(id=kwargs.get('quiz_id')).first()
         form = QuizSolverForm(quiz=quiz)
         return {
+            'quiz': quiz,
             'form': form
         }
+
+    def post(self, *args, **kwargs):
+        quiz = Quiz.query.filter_by(id=kwargs.get('quiz_id')).first()
+        form = QuizSolverForm(quiz=quiz, formdata=request.form)
+        if form.validate():
+            data = form.get_processed_data()
+
+        # send this data to tutor, and redirect user
 
 
 class QuizCreatorReadView(
