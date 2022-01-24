@@ -1,9 +1,13 @@
 import datetime
+from typing import final
+from flask import session
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash
+from apps.quiz.models import UserQuizAttempts, Quiz
 
 from database.database import db
+from sqlalchemy import desc
 
 
 class User(db.Model, UserMixin):
@@ -31,3 +35,16 @@ class User(db.Model, UserMixin):
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
+
+    def get_last_10_quiz_attempts(self):
+        this_user_attempts = UserQuizAttempts.query.filter_by(user_id=self.id).order_by(UserQuizAttempts.date.desc()).limit(10).all()
+        if this_user_attempts == []:
+            return "You don't have any quiz attempts yet"
+        else:
+            final_table = []
+            for i in range (0, len(this_user_attempts)):
+                quiz_name = Quiz.query.get(this_user_attempts[i].quiz_id).title
+                score = this_user_attempts[i].score
+                date = this_user_attempts[i].date.strftime("%m/%d/%Y, %H:%M:%S")
+                final_table.append((quiz_name, score, date))
+            return final_table
