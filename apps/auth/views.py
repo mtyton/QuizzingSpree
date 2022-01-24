@@ -10,7 +10,7 @@ from apps.auth.forms import RegistrationForm, LoginForm
 from apps.auth.permissions import (
     IsAuthenticatedPermission, IsNotAuthenticatedPermission
 )
-
+from apps.auth.models import User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -74,6 +74,11 @@ class RegisterView(BasePermissionCheckMethodView):
 class MyAccountView(BasePermissionCheckMethodView):
     methods = ["GET"]
     template_name = "auth/account.html"
+
+    def get_context(self) -> dict:
+        return {
+            'form': current_user.get_last_10_quiz_attempts()
+        }
 
     permissions = [IsAuthenticatedPermission(), ]
 
