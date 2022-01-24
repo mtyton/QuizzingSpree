@@ -1,13 +1,10 @@
 import datetime
-from typing import final
-from flask import session
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash
 from apps.quiz.models import UserQuizAttempts, Quiz
 
 from database.database import db
-from sqlalchemy import desc
 
 
 class User(db.Model, UserMixin):

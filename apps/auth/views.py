@@ -10,7 +10,6 @@ from apps.auth.forms import RegistrationForm, LoginForm
 from apps.auth.permissions import (
     IsAuthenticatedPermission, IsNotAuthenticatedPermission
 )
-from apps.auth.models import User
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
