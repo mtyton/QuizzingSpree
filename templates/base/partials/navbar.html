@@ -1,32 +1,33 @@
-<nav class="navbar navbar-expand-lg  navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand">QuizzingSpree</a>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}"/>
 
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">
-      <ul class="navbar-nav">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+  <div class="container-fluid">
+
+    <div class="nav navbar-collapse collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav nav-pills">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page"
-             href="{{ url_for('website.home') }}">
+          <a class="nav-link" id="home-tab" href="{{ url_for('website.home') }}">
             Home
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page"
-             href="{{ url_for('quiz.quiz_list') }}">
-            Available quizzes
+          <a class="nav-link" id="quizlist-tab" href="{{ url_for('quiz.quiz_list') }}">
+          Available Quizzes
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('quiz.quiz_create') }}">Create a Quiz</a>
+          <a class="nav-link" id="createquiz-tab" href="{{ url_for('quiz.quiz_create') }}">
+          Create Quiz
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('website.about_us') }}">
-            About Us
+          <a class="nav-link" id="aboutus-tab" href="{{ url_for('website.about_us') }}">
+          About Us
           </a>
         </li>
       </ul>
     </div>
-
 
     <div class="d-flex">
       {% if current_user.is_authenticated %}
@@ -40,3 +41,7 @@
 
   </div>
 </nav>
+
+{% block scriptextras %}
+  <script src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+{% endblock %}
