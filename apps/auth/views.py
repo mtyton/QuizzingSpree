@@ -75,9 +75,15 @@ class MyAccountView(BasePermissionCheckMethodView):
     template_name = "auth/account.html"
 
     def get_context(self) -> dict:
-        return {
-            'form': current_user.get_last_10_quiz_attempts()
-        }
+        latest_quiz_attempts = current_user.get_latest_quiz_attempts()
+        if latest_quiz_attempts is None:
+            return {
+                'form': "You don't have any quiz attempts yet"
+            }
+        else:
+            return {
+                'form': latest_quiz_attempts
+            }
 
     permissions = [IsAuthenticatedPermission(), ]
 

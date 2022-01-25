@@ -33,14 +33,14 @@ class User(db.Model, UserMixin):
     def set_password(self, password):
         self.password = generate_password_hash(password)
 
-    def get_last_10_quiz_attempts(self):
-        this_user_attempts = UserQuizAttempts.query.filter_by(user_id=self.id).order_by(UserQuizAttempts.date.desc()).limit(10).all()
+    def get_latest_quiz_attempts(self, number_of_quizzes: int=10):
+        this_user_attempts = UserQuizAttempts.query.filter_by(user_id=self.id).order_by(UserQuizAttempts.date.desc()).limit(number_of_quizzes).all()
         if this_user_attempts == []:
-            return "You don't have any quiz attempts yet"
+            return None
         else:
             final_table = []
             for i in range (0, len(this_user_attempts)):
-                quiz_name = Quiz.query.get(this_user_attempts[i].quiz_id).title
+                quiz_name = this_user_attempts[i].quiz.title
                 score = this_user_attempts[i].score
                 date = this_user_attempts[i].date.strftime("%m/%d/%Y, %H:%M:%S")
                 final_table.append((quiz_name, score, date))

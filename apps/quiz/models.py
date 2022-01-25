@@ -106,10 +106,13 @@ class UserQuizAttempts(db.Model):
         db.Integer, db.ForeignKey('user.id'),
         nullable=False
     )
+    user = db.relationship('User', backref='user', lazy=True)
+
     quiz_id = db.Column(
         db.Integer, db.ForeignKey('quiz.id'),
         nullable=False
     )
+    quiz = db.relationship('Quiz', backref='quiz', lazy=True)
 
     score = db.Column(db.Integer, nullable=False)
     date = db.Column(db.DateTime, nullable=False)
