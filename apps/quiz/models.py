@@ -99,7 +99,7 @@ class Answer(db.Model):
         self.question_id = question_id
 
 
-class UserQuizAttempts(db.Model):
+class UserQuizAttempt(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(

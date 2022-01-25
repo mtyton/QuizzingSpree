@@ -2,7 +2,7 @@ import datetime
 
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash
-from apps.quiz.models import UserQuizAttempts, Quiz
+from apps.quiz.models import UserQuizAttempt
 
 from database.database import db
 
@@ -34,14 +34,8 @@ class User(db.Model, UserMixin):
         self.password = generate_password_hash(password)
 
     def get_latest_quiz_attempts(self, number_of_quizzes: int=10):
-        this_user_attempts = UserQuizAttempts.query.filter_by(user_id=self.id).order_by(UserQuizAttempts.date.desc()).limit(number_of_quizzes).all()
+        this_user_attempts = UserQuizAttempt.query.filter_by(user_id=self.id).order_by(UserQuizAttempt.date.desc()).limit(number_of_quizzes).all()
         if this_user_attempts == []:
             return None
         else:
-            final_table = []
-            for i in range (0, len(this_user_attempts)):
-                quiz_name = this_user_attempts[i].quiz.title
-                score = this_user_attempts[i].score
-                date = this_user_attempts[i].date.strftime("%m/%d/%Y, %H:%M:%S")
-                final_table.append((quiz_name, score, date))
-            return final_table
+            return this_user_attempts
