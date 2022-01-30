@@ -21,9 +21,13 @@
                               </tr>
                             </thead>
                             <tbody>
+                                {% for attempt in latest_quiz_attempts %}
                                 <tr>
-                                    <td>{{ form }}</td>
+                                    <td>{{ attempt.quiz.title }}</td>
+                                    <td>{{ attempt.score }}</td>
+                                    <td>{{ attempt.date }}</td>
                                 </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

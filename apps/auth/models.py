@@ -30,12 +30,11 @@ class User(db.Model, UserMixin):
         # https://stackoverflow.com/questions/20461030/current-date-curdate-not-working-as-default-date-value
         self.registered_at = datetime.date.today()
 
-    def set_password(self, password):
+    def set_password(self, password) -> None:
         self.password = generate_password_hash(password)
 
-    def get_latest_quiz_attempts(self, number_of_quizzes: int=10):
-        this_user_attempts = UserQuizAttempt.query.filter_by(user_id=self.id).order_by(UserQuizAttempt.date.desc()).limit(number_of_quizzes).all()
-        if this_user_attempts == []:
-            return None
-        else:
-            return this_user_attempts
+    # TODO - add type annotation
+    def get_latest_quiz_attempts(self, number_of_quizzes: int = 10):
+        return UserQuizAttempt.query.filter_by(user_id=self.id).order_by(
+            UserQuizAttempt.date.desc()
+        ).limit(number_of_quizzes).all()
