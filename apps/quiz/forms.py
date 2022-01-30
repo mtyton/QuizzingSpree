@@ -156,6 +156,10 @@ class QuizSolverForm(Form):
         super().__init__(*args, **kwargs)
 
     def validate(self, extra_validators=None) -> bool:
+        """
+        This method validates the form, it's done simply by
+        validating all subforms
+        """
         return self.questions.validate(extra_validators)
 
     questions = FieldList(

@@ -77,7 +77,8 @@ class Question(db.Model):
         self.question_type = question_type
         self.quiz_id = quiz_id
 
-    def get_all_answers(self) -> List[tuple]:
+    # TODO add type annotation
+    def get_all_answers(self):
         """
         Simple method which returns a list of tuples, prepared to be choices
         :return:
