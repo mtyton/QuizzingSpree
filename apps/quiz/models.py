@@ -1,4 +1,5 @@
 from database.database import db
+import datetime
 
 from apps.quiz.taxonomies import (
     QuestionTypeEnum, QuizDifficultyLevelEnum
@@ -96,4 +97,39 @@ class Answer(db.Model):
         self.content = content
         self.correct = correct
         self.question_id = question_id
+
+
+class UserQuizAttempt(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(
+        db.Integer, db.ForeignKey('user.id'),
+        nullable=False
+    )
+    user = db.relationship(
+        'User', backref=db.backref('quiz_attempts', lazy=True)
+    )
+
+    quiz_id = db.Column(
+        db.Integer, db.ForeignKey('quiz.id'),
+        nullable=False
+    )
+    quiz = db.relationship(
+        'Quiz', backref=db.backref('users_attempts', lazy=True)
+    )
+
+    score = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+
+    def __init__(
+            self, user_id: int, quiz_id: int, score: int,
+            *args, **kwargs
+    ):
+        super().__init__(*args, **kwargs)
+        self.user_id = user_id
+        self.quiz_id = quiz_id
+        self.score = score
+        self.date = datetime.date.today()
+
+    
 
