@@ -12,6 +12,7 @@ def test_get_register_view_as_authenticated(test_app, user):
     login(test_app, user.username, "complexP@ssworD")
     response = test_app.get(url_for('auth.register'))
     assert response.status_code == 301
+    logout(test_app)
 
 
 def test_get_register_view_as_not_authenticated(test_app):
@@ -45,8 +46,10 @@ def test_post_register_not_authenticated_success(test_app):
 
 
 def test_post_register_not_authenticated_incorrect_data(test_app):
+    # make sure that user is not logged in
+    logout(test_app)
     register_form_data = {
-        'username': "testUser",
+        'username': "testUser1123",
         'email': "test@mtyton.com",
         'password': "complexTestP@ssw0rD",
         'confirm': "differentPassword",
@@ -63,7 +66,7 @@ def test_post_register_authenticated(test_app, user):
     login(test_app, user.username, "complexP@ssworD")
 
     register_form_data = {
-        'username': "testUser",
+        'username': "testUser22",
         'email': "test@mtyton.com",
         'password': "complexTestP@ssw0rD",
         'confirm': "complexTestP@ssw0rD",
@@ -74,6 +77,7 @@ def test_post_register_authenticated(test_app, user):
     assert response.status_code == 301
     user = User.query.filter_by(username=register_form_data['username']).first()
     assert user is None
+    logout(test_app)
 
 
 def test_get_login_not_authenticated(test_app):
@@ -86,6 +90,7 @@ def test_get_login_authenticated(test_app, user):
 
     response = test_app.get(url_for('auth.login'))
     assert response.status_code == 301
+    logout(test_app)
 
 
 def test_post_login_not_authenticated_success(test_app, user):
@@ -95,6 +100,7 @@ def test_post_login_not_authenticated_success(test_app, user):
     }
     response = test_app.post(url_for('auth.login'), data=login_data)
     assert response.status_code == 301
+    logout(test_app)
 
 
 def test_post_login_not_authenticated_wrong_password(test_app, user):
@@ -115,5 +121,6 @@ def test_post_login_authenticated(test_app, user):
     }
     response = test_app.post(url_for('auth.login'), data=login_data)
     assert response.status_code == 301
+    logout(test_app)
 
 

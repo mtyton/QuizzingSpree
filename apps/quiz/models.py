@@ -35,6 +35,8 @@ class Quiz(db.Model):
 
     description = db.Column(db.String(500))
     questions = db.relationship('Question', backref='quiz', lazy=True)
+    author = db.relationship('User')
+
 
     def __init__(
             self, author_id: int, title: str, category_id: int,
@@ -130,6 +132,3 @@ class UserQuizAttempt(db.Model):
         self.quiz_id = quiz_id
         self.score = score
         self.date = datetime.date.today()
-
-    
-

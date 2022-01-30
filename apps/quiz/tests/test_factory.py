@@ -3,7 +3,8 @@ from apps.base.tests.test_base import (
 )
 from apps.quiz.tests.fixtures import (
     quiz_obj, select_multiple_question_data,
-    select_question_data, quiz_creation_data
+    select_question_data, quiz_creation_data,
+    category_obj
 )
 from apps.quiz.quiz_factory import (
     SelectQuestionFactory, SelectMultipleQuestionFactory, QuizFactory
