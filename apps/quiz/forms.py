@@ -132,7 +132,11 @@ class QuestionSolverForm(Form):
             multiple = True
 
         self.answer.widget = Select(multiple=multiple)
-        self.answer.choices = self.question.get_all_answers()
+        # add proper choices to fields
+        choices = []
+        for answer in self.question.get_all_answers():
+            choices.append((answer.id, answer.content))
+        self.answer.choices = choices
 
     def get_processed_data(self) -> dict:
         # get proper answer object using id

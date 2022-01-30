@@ -81,10 +81,7 @@ class Question(db.Model):
         Simple method which returns a list of tuples, prepared to be choices
         :return:
         """
-        choices = []
-        for answer in self.answers:
-            choices.append((answer.id, answer.content))
-        return choices
+        return self.answers
 
 
 class Answer(db.Model):
@@ -107,4 +104,3 @@ class Answer(db.Model):
         self.content = content
         self.correct = correct
         self.question_id = question_id
-

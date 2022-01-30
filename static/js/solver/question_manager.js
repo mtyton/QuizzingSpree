@@ -1,10 +1,13 @@
-//TODO - add comments
 
 function extractNumberFromID(id) {
+    // Simply extract question number from given question id
     return parseInt(id.split('-')[2])
 }
 
 function switchQuestion(change, currID) {
+    /**
+    Simply switches question to previous/next
+    **/
     var questionID = currID,
         number = extractNumberFromID(questionID);
 
@@ -37,6 +40,9 @@ function switchQuestion(change, currID) {
 
 
 $(document).ready(function() {
+    /**
+   Binding methods, additional initial operations.
+    */
     let currentQuestionID = "#container-question-0";
 
     currentQuestionID = switchQuestion(1, currentQuestionID);
