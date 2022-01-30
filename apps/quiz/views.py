@@ -10,14 +10,23 @@ from apps.quiz.forms import QuizCreationForm, QuizSolverForm
 from apps.quiz.quiz_factory import QuizFactory
 from apps.quiz.models import Quiz
 from apps.auth.permissions import IsAuthenticatedPermission
+from apps.quiz.models import Quiz
 
 
 bp = Blueprint('quiz', __name__)
 
 
 class QuizListView(BasePermissionCheckMethodView):
-
+    QUIZZES_PER_PAGE = 2
     template_name = "quiz/quiz_list.html"
+
+    def get_context(self) -> dict:
+        page = request.args.get('page', default=1, type=int)
+        pagination = Quiz.query.paginate(page, self.QUIZZES_PER_PAGE)
+
+        return {
+            'pagination': pagination,
+        }
 
 
 class QuizSolverView(BasePermissionCheckMethodView):
