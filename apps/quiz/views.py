@@ -33,13 +33,17 @@ class QuizSolverView(BasePermissionCheckMethodView):
             'form': form
         }
 
+    def __get_preprocessed_form_data(self, data):
+        pass
+
     def post(self, *args, **kwargs):
         quiz = Quiz.query.filter_by(id=kwargs.get('quiz_id')).first()
         form = QuizSolverForm(quiz=quiz, formdata=request.form)
         if form.validate():
             data = form.get_processed_data()
-
-        # send this data to tutor, and redirect user
+        # TODO add evaluation
+        flash("You have successfully finished the quiz!", "success")
+        return redirect(url_for("auth.my_account"))
 
 
 class QuizCreatorReadView(

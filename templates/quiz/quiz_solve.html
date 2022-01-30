@@ -8,8 +8,8 @@
                     <div class="card-body">
                         <h5 class="card-title">{{question.content}}</h5>
                          <div class="mb-3">
-                            <label for="question-{{number}}-answer">Answer: </label>
-                            {{question.answer(class="form-control" id="question-{{number}}-answer")}}
+                            <label for="question-{{loop.index-1}}-answer">Answer: </label>
+                            {{question.answer(class="form-control")}}
                         </div>
                     </div>
                 </div>

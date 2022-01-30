@@ -2,10 +2,11 @@ from flask_login import current_user
 from flask_wtf import Form
 from wtforms import (
     FieldList, StringField, SelectField, validators, TextAreaField,
-    FormField, BooleanField, SelectMultipleField
+    FormField, BooleanField
 )
+from wtforms.widgets import Select
 
-from apps.quiz.models import QuizCategory, Quiz
+from apps.quiz.models import QuizCategory, Quiz, Answer
 from apps.quiz.taxonomies import QuestionTypeEnum
 
 
@@ -115,74 +116,52 @@ class QuizCreationForm(Form):
 # solver forms
 
 
-class BaseQuestionSolverForm(Form):
+class QuestionSolverForm(Form):
 
-    answer = None
+    answer = SelectField("Answer", validators=[validators.DataRequired()])
 
     def __init__(self, *args, **kwargs):
-        question = kwargs.pop('question', None)
-        self.question = question
-        self.content = question.content
+        self.question = kwargs.get('obj', None)
+        self.content = self.question.content
         super().__init__(*args, **kwargs)
-        self.answer.choices = question.get_all_answers()
+        # This variable defines if current Select Field may
+        # have multiple answers
+        multiple = False
+
+        if self.question.question_type is QuestionTypeEnum.SELECT_MULTIPLE:
+            multiple = True
+
+        self.answer.widget = Select(multiple=multiple)
+        self.answer.choices = self.question.get_all_answers()
 
     def get_processed_data(self) -> dict:
+        # get proper answer object using id
+        answer_obj = Answer.query.filter_by(id=int(self.answer.data)).first()
+
         return {
             'question': self.question,
-            'answer': self.answer.data
+            'answer': answer_obj
         }
-
-
-# now we have to implement each specific question type
-
-class SelectQuestionSolverForm(BaseQuestionSolverForm):
-
-    answer = SelectField(
-        u'Answer', [validators.data_required(), ]
-    )
-
-
-class SelectMultipleQuestionSolverForm(BaseQuestionSolverForm):
-
-    answer = SelectMultipleField(
-        u'Answers', [validators.data_required(), ]
-    )
 
 
 class QuizSolverForm(Form):
 
-    question_form_type_map = {
-        QuestionTypeEnum.SELECT: SelectQuestionSolverForm,
-        QuestionTypeEnum.SELECT_MULTIPLE: SelectMultipleQuestionSolverForm,
-    }
-
-    def _initialize_quiz(self, quiz: Quiz) -> None:
-        for number, question in enumerate(quiz.questions):
-            form_class = self.question_form_type_map[question.question_type]
-            self.questions.entries.append(
-                form_class(**{
-                    'question': question,
-                    'id': f'question-{number}-form'
-                })
-            )
-
     def __init__(self, quiz: Quiz, *args, **kwargs):
+        kwargs['data'] = {}
+        kwargs['data']['questions'] = [q for q in quiz.questions]
         super().__init__(*args, **kwargs)
-        self._initialize_quiz(quiz)
 
     def validate(self, extra_validators=None) -> bool:
         return self.questions.validate(extra_validators)
 
     questions = FieldList(
-        FormField(BaseQuestionSolverForm, label='Questions'),
+        FormField(QuestionSolverForm, label='Questions'),
         min_entries=0, max_entries=250
     )
 
     def get_processed_data(self) -> dict:
-        import ipdb
-        ipdb.set_trace()
         return {
             'questions': [
-                question.get_processed_data for question in self.questions
+                question.get_processed_data() for question in self.questions
             ]
         }
