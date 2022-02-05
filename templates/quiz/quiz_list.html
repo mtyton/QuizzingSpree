@@ -1,40 +1,52 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="bg-image" align="center">
+<div class="bg-image">
+  {% for quiz in pagination.items %}
     <div class="container card border-0 shadow mt-5">
-        <!-- Rows of quizzes with their metadata -->
-        <div class="row hstack gap-3 border border-light border-4" align="left">
-            <div class="col-6 col-md-4 border-4">
-              <img src="{{ url_for('static', filename='imgs/puzzle-piece.png') }}">
-            </div>
-
-            <div class="col-sm-6 col-md-8">
-                <div class="container mt-3">
-                    <h3>Da first quiz</h3>
-                    <div class="mt-2">
-                       Quiz so hard that you better off go and cry in bed you lame 🧠🤯
-                    </div>
-                    <div class="mt-4">
-                        <h5 class="w-25 d-inline-block">Author: Anonymous</h5>
-
-                        <div class="d-grid gap-2 d-md-flex me-4">
-                          <button class="btn btn-lg btn-success" type="button">Start</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="d-flex align-items-center col-6 col-md-10 p-2 m-2 mt-3">
+        <img src="{{ url_for('static', filename='imgs/puzzle.png') }}"
+             class="img-thumbnail rounded float-start"
+             height="65px auto" width="65px auto"
+             alt="">
+        <div style="margin-left: 2rem;"></div>
+        <h4 class="display-4">{{ quiz.title }}</h4>
+      </div>
+      <hr>
+      <div class="ml-3">{{ quiz.description }}</div>
+        <div class="d-flex align-items-center justify-content-between">
+          <div>Author: {{ quiz.author.username }}</div>
+          <div>
+            <a class="btn btn-lg btn-outline-success m-2" href="{{ url_for('quiz.quiz_list', id=quiz.id) }}" type="button">Start Quiz</a>
+          </div>
         </div>
-        <nav aria-label="pagination" class="mt-5">
-            <ul class="pagination pagination-lg justify-content-center">
-                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-        </nav>
-
     </div>
+  {% endfor %}
+
+
+  {% if pagination.pages > 1 %}
+    <nav aria-label="Page navigation example" class="mt-5">
+      <ul class="pagination pagination-lg justify-content-center">
+        {% if pagination.page > 1 %}
+          <li class="page-item"><a class="page-link" href=" {{ url_for('quiz.quiz_list', page=(pagination.page - 1)) }}">Previous</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Previous</span></li>
+        {% endif %}
+        {% for p in pagination.iter_pages() %}
+          {% if p != pagination.page %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('quiz.quiz_list', page=p) }}">{{ p }}</a></li>
+          {% else %}
+            <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+          {% endif %}
+        {% endfor %}
+        {% if pagination.page < pagination.pages %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('quiz.quiz_list', page=(pagination.page + 1)) }}">Next</a></li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">Next</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+
 </div>
 {% endblock %}

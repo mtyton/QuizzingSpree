@@ -4,17 +4,18 @@
 <div class="bg-image" align="center">
     <div class="container card border-0 shadow mt-5" align="left">
         <form id="quiz_create_form" method="POST">
+            <!--
+                Quiz form
+            -->
             {{ form.csrf_token }}
+            <div class="mb-3">
+                {{form.category(class="form-select")}}
+            </div>
             <div class="mb-3">
                 <label for="titleInput">{{form.title.label}}</label>
                 {{form.title(class="form-control", id="titleInput")}}
                 <div id="titleHelp" class="form-text">Enter your quiz title here</div>
             </div>
-            <!--
-            <div class="mb-3">
-                {{form.category(class="form-select")}}
-            </div>
-            -->
             <div class="mb-3">
                 <label for="descInput">{{form.description.label}}</label>
                 {{form.description(class="form-control", id="descInput")}}
@@ -23,7 +24,7 @@
 
             <div id="question-container" class="mt-3">
                 {% with question_form=form.questions[0] %}
-                {% include 'quiz/partials/new_question.html' %}
+                    {% include 'quiz/partials/new_question.html' %}
                 {% endwith %}
             </div>
 
@@ -31,9 +32,12 @@
 
         </form>
 
-    </div>
+        <div class="visually-hidden" id="question-template-container">
+
+        </div>
 
     </div>
+
 </div>
 
 

@@ -11,7 +11,6 @@ from apps.auth.permissions import (
     IsAuthenticatedPermission, IsNotAuthenticatedPermission
 )
 
-
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -74,8 +73,19 @@ class RegisterView(BasePermissionCheckMethodView):
 class MyAccountView(BasePermissionCheckMethodView):
     methods = ["GET"]
     template_name = "auth/account.html"
-
     permissions = [IsAuthenticatedPermission(), ]
+
+    def get_context(self) -> dict:
+        latest_quiz_attempts = current_user.get_latest_quiz_attempts()
+        basic_context = {
+            'latest_quiz_attempts': latest_quiz_attempts
+        }
+
+        if latest_quiz_attempts is None:
+            basic_context.update({
+                'error_message': "You don't have any quiz attempts yet"
+            })
+        return basic_context
 
 
 bp.add_url_rule('/login', view_func=LoginView.as_view('login'))
