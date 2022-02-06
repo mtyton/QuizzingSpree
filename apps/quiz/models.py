@@ -1,5 +1,4 @@
 import datetime
-from typing import List
 
 from database.database import db
 from apps.quiz.taxonomies import (
