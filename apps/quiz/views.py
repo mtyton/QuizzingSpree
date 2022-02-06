@@ -2,15 +2,15 @@ from flask import (
     Blueprint, Response, redirect, url_for, request,
     flash
 )
-
+from werkzeug.datastructures import ImmutableDict
 from apps.base.views import (
     BasePermissionCheckMethodView, PostFailureRenderMixin
 )
 from apps.quiz.forms import QuizCreationForm, QuizSolverForm
 from apps.quiz.quiz_factory import QuizFactory
-from apps.quiz.models import Quiz
 from apps.auth.permissions import IsAuthenticatedPermission
 from apps.quiz.models import Quiz
+from apps.quiz.evaluator import QuizEvaluator
 
 
 bp = Blueprint('quiz', __name__)
@@ -29,7 +29,7 @@ class QuizListView(BasePermissionCheckMethodView):
         }
 
 
-class QuizSolverView(BasePermissionCheckMethodView):
+class QuizSolverView(PostFailureRenderMixin, BasePermissionCheckMethodView):
 
     template_name = "quiz/quiz_solve.html"
     permissions = [IsAuthenticatedPermission(), ]
@@ -42,12 +42,24 @@ class QuizSolverView(BasePermissionCheckMethodView):
             'form': form
         }
 
+    def _preprocess_form_data(self, data):
+        new_data = {}
+        for key, value in data.items():
+            new_data[key] = int(value)
+        return ImmutableDict(
+            [(key, value) for key, value in new_data.items()]
+        )
+
     def post(self, *args, **kwargs):
         quiz = Quiz.query.filter_by(id=kwargs.get('quiz_id')).first()
+        # fromdata = self._preprocess_form_data(request.form)
         form = QuizSolverForm(quiz=quiz, formdata=request.form)
-        if form.validate():
-            data = form.get_processed_data()
-        # TODO add evaluation
+        if not form.validate():
+            flash("Something went wrong during validation!", "error")
+            return self._unsuccessful_post_response({'form': form})
+
+        data = form.get_processed_data()
+        QuizEvaluator.evaluate(quiz, data)
         flash("You have successfully finished the quiz!", "success")
         return redirect(url_for("auth.my_account"))
 

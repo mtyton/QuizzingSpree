@@ -2,7 +2,7 @@ from flask_login import current_user
 from flask_wtf import Form
 from wtforms import (
     FieldList, StringField, SelectField, validators, TextAreaField,
-    FormField, BooleanField
+    FormField, BooleanField, SelectMultipleField
 )
 from wtforms.widgets import Select
 
@@ -118,7 +118,9 @@ class QuizCreationForm(Form):
 
 class QuestionSolverForm(Form):
 
-    answer = SelectField("Answer", validators=[validators.DataRequired()])
+    answer = SelectMultipleField(
+        "Answer", validators=[validators.DataRequired()]
+    )
 
     def __init__(self, *args, **kwargs):
         self.question = kwargs.get('obj', None)
@@ -134,17 +136,14 @@ class QuestionSolverForm(Form):
         self.answer.widget = Select(multiple=multiple)
         # add proper choices to fields
         choices = []
-        for answer in self.question.get_all_answers():
-            choices.append((answer.id, answer.content))
+        for answer in self.question.answers:
+            choices.append((str(answer.id), answer.content))
         self.answer.choices = choices
 
     def get_processed_data(self) -> dict:
-        # get proper answer object using id
-        answer_obj = Answer.query.filter_by(id=int(self.answer.data)).first()
-
         return {
             'question': self.question,
-            'answer': answer_obj
+            'answers': self.answer.data
         }
 
 

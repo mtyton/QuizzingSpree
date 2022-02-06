@@ -67,7 +67,7 @@ class Question(db.Model):
         nullable=False
     )
 
-    answers = db.relationship('Answer', backref='question', lazy=True)
+    answers = db.relationship('Answer', backref='question', lazy='dynamic')
 
     def __init__(
             self, content: str, question_type: QuestionTypeEnum,
@@ -78,13 +78,9 @@ class Question(db.Model):
         self.question_type = question_type
         self.quiz_id = quiz_id
 
-    # TODO add type annotation
-    def get_all_answers(self):
-        """
-        Simple method which returns a list of tuples, prepared to be choices
-        :return:
-        """
-        return self.answers
+    @property
+    def correct_answers(self):
+        return self.answers.filter_by(correct=1)
 
 
 class Answer(db.Model):
@@ -132,11 +128,11 @@ class UserQuizAttempt(db.Model):
     date = db.Column(db.DateTime, nullable=False)
 
     def __init__(
-            self, user_id: int, quiz_id: int, score: int,
+            self, user, quiz: Quiz, score: int,
             *args, **kwargs
     ):
         super().__init__(*args, **kwargs)
-        self.user_id = user_id
-        self.quiz_id = quiz_id
+        self.user = user
+        self.quiz = quiz
         self.score = score
         self.date = datetime.date.today()
