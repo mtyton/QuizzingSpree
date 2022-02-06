@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <form method="POST" action="">
+            {% for question in form.questions %}
+                <div class="card visually-hidden" id="container-question-{{loop.index}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{question.content}}</h5>
+                         <div class="mb-3">
+                            <label for="question-{{loop.index-1}}-answer">Answer: </label>
+                            {{question.answer(class="form-control")}}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <div id="summary" class="visually-hidden">
+                TEST OUT
+                <input type="submit" value="Send Responses"/>
+            </div>
+
+        </form>
+
+        <ul class="pagination pagination-lg justify-content-center">
+            <li class="page-item"><a class="page-link" href="#" id="prev-question">Previous Question</a></li>
+            <li class="page-item"><a class="page-link" href="#" id="next-question">Next Question</a></li>
+        </ul>
+
+    </div>
+{% endblock %}
+
+{% block scriptextras %}
+    <script src="{{ url_for('static', filename='js/solver/question_manager.js') }}"></script>
+{% endblock %}
+

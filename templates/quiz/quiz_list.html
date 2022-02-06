@@ -19,7 +19,7 @@
           <div class="mt-4">
             <h5 class="w-25 d-inline-block">By: {{ quiz.author.username }}</h5>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end me-4">
-              <a href="{{ url_for('quiz.quiz_list', id=quiz.id) }}" class="btn btn-lg btn-success" type="button">Start</a>
+              <a href="{{ url_for('quiz.quiz_solve', quiz_id=quiz.id) }}" class="btn btn-lg btn-success" type="button">Start</a>
             </div>
           </div>
         </div>
