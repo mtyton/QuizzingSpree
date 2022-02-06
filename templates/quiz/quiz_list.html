@@ -17,7 +17,7 @@
         <div class="d-flex align-items-center justify-content-between">
           <div>Author: {{ quiz.author.username }}</div>
           <div>
-            <a class="btn btn-lg btn-outline-success m-2" href="{{ url_for('quiz.quiz_list', id=quiz.id) }}" type="button">Start Quiz</a>
+            <a class="btn btn-lg btn-outline-success m-2" href="{{ url_for('quiz.quiz_solve', quiz_id=quiz.id) }}" type="button">Start Quiz</a>
           </div>
         </div>
     </div>

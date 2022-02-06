@@ -2,14 +2,15 @@ from flask import (
     Blueprint, Response, redirect, url_for, request,
     flash
 )
-
+from werkzeug.datastructures import ImmutableDict
 from apps.base.views import (
     BasePermissionCheckMethodView, PostFailureRenderMixin
 )
-from apps.quiz.forms import QuizCreationForm
+from apps.quiz.forms import QuizCreationForm, QuizSolverForm
 from apps.quiz.quiz_factory import QuizFactory
 from apps.auth.permissions import IsAuthenticatedPermission
 from apps.quiz.models import Quiz
+from apps.quiz.evaluator import QuizEvaluator
 
 
 bp = Blueprint('quiz', __name__)
@@ -28,6 +29,41 @@ class QuizListView(BasePermissionCheckMethodView):
         }
 
 
+class QuizSolverView(PostFailureRenderMixin, BasePermissionCheckMethodView):
+
+    template_name = "quiz/quiz_solve.html"
+    permissions = [IsAuthenticatedPermission(), ]
+
+    def get_context(self, *args, **kwargs) -> dict:
+        quiz = Quiz.query.filter_by(id=kwargs.get('quiz_id')).first()
+        form = QuizSolverForm(quiz=quiz)
+        return {
+            'quiz': quiz,
+            'form': form
+        }
+
+    def _preprocess_form_data(self, data):
+        new_data = {}
+        for key, value in data.items():
+            new_data[key] = int(value)
+        return ImmutableDict(
+            [(key, value) for key, value in new_data.items()]
+        )
+
+    def post(self, *args, **kwargs):
+        quiz = Quiz.query.filter_by(id=kwargs.get('quiz_id')).first()
+        # fromdata = self._preprocess_form_data(request.form)
+        form = QuizSolverForm(quiz=quiz, formdata=request.form)
+        if not form.validate():
+            flash("Something went wrong during validation!", "error")
+            return self._unsuccessful_post_response({'form': form})
+
+        data = form.get_processed_data()
+        QuizEvaluator.evaluate(quiz, data)
+        flash("You have successfully finished the quiz!", "success")
+        return redirect(url_for("auth.my_account"))
+
+
 class QuizCreatorReadView(
     PostFailureRenderMixin, BasePermissionCheckMethodView
 ):
@@ -38,7 +74,7 @@ class QuizCreatorReadView(
     permission_lack_message = "You have to be logged in to create a quiz"
     permissions = [IsAuthenticatedPermission(), ]
 
-    def get_context(self) -> dict:
+    def get_context(self, *args, **kwargs) -> dict:
         return {
             'form': QuizCreationForm()
         }
@@ -67,4 +103,7 @@ class QuizCreatorReadView(
 bp.add_url_rule('/quiz-list', view_func=QuizListView.as_view('quiz_list'))
 bp.add_url_rule(
     '/quiz-create', view_func=QuizCreatorReadView.as_view('quiz_create')
+)
+bp.add_url_rule(
+    '/quiz-solve/<quiz_id>/', view_func=QuizSolverView.as_view('quiz_solve')
 )

@@ -10,21 +10,23 @@ class BaseTemplateRenderMixin(object):
 
     template_name = None
 
-    def get_context(self) -> dict:
+    def get_context(self, *args, **kwargs) -> dict:
         """
         This method should simply returns page context.
         :return:
         """
         return {}
 
-    def get(self):
+    def get(self, *args, **kwargs):
         """
         Basic get method, it'll always render the defined template.
         If template has not been defined, it'll rise an error.
         :return:
         """
         assert self.template_name is not None
-        return render_template(self.template_name, **self.get_context())
+        return render_template(
+            self.template_name, **self.get_context(*args, **kwargs)
+        )
 
 
 class PostFailureRenderMixin(object):

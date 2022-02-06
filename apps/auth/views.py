@@ -20,7 +20,7 @@ class LoginView(BasePermissionCheckMethodView):
 
     permissions = [IsNotAuthenticatedPermission(), ]
 
-    def get_context(self) -> dict:
+    def get_context(self, *args, **kwargs) -> dict:
         return {
             'form': LoginForm()
         }
@@ -53,7 +53,7 @@ class RegisterView(BasePermissionCheckMethodView):
 
     permissions = [IsNotAuthenticatedPermission(), ]
 
-    def get_context(self) -> dict:
+    def get_context(self, *args, **kwargs) -> dict:
         return {
             'form': RegistrationForm()
         }

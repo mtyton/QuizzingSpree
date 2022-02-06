@@ -2,16 +2,17 @@ from flask_login import current_user
 from flask_wtf import Form
 from wtforms import (
     FieldList, StringField, SelectField, validators, TextAreaField,
-    FormField, BooleanField
+    FormField, BooleanField, SelectMultipleField
 )
+from wtforms.widgets import Select
 
-from apps.quiz.models import QuizCategory
+from apps.quiz.models import QuizCategory, Quiz, Answer
 from apps.quiz.taxonomies import QuestionTypeEnum
 
 
 # TODO - create base form class
 
-class AnswerForm(Form):
+class AnswerCreationForm(Form):
     content = StringField(
         "Answer content",
         [validators.data_required(), validators.length(max=250)]
@@ -31,7 +32,7 @@ class AnswerForm(Form):
         }
 
 
-class QuestionForm(Form):
+class QuestionCreationForm(Form):
     question_type = SelectField(
         u"Question Type", choices=[
             (QuestionTypeEnum.SELECT.value, "Select"),
@@ -43,7 +44,7 @@ class QuestionForm(Form):
         [validators.data_required(), validators.length(max=250)]
     )
     answers = FieldList(
-        FormField(AnswerForm, label='Answers'),
+        FormField(AnswerCreationForm, label='Answers'),
         min_entries=1, max_entries=6
     )
 
@@ -80,7 +81,7 @@ class QuizCreationForm(Form):
     )
 
     questions = FieldList(
-        FormField(QuestionForm, label='Questions'),
+        FormField(QuestionCreationForm, label='Questions'),
         min_entries=1, max_entries=250
     )
 
@@ -106,6 +107,67 @@ class QuizCreationForm(Form):
             'author_id': current_user.id,
             'category_id': self.category.data,
             'description': self.description.data,
+            'questions': [
+                question.get_processed_data() for question in self.questions
+            ]
+        }
+
+
+# solver forms
+
+
+class QuestionSolverForm(Form):
+
+    answer = SelectMultipleField(
+        "Answer", validators=[validators.DataRequired()]
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.question = kwargs.get('obj', None)
+        self.content = self.question.content
+        super().__init__(*args, **kwargs)
+        # This variable defines if current Select Field may
+        # have multiple answers
+        multiple = False
+
+        if self.question.question_type is QuestionTypeEnum.SELECT_MULTIPLE:
+            multiple = True
+
+        self.answer.widget = Select(multiple=multiple)
+        # add proper choices to fields
+        choices = []
+        for answer in self.question.answers:
+            choices.append((str(answer.id), answer.content))
+        self.answer.choices = choices
+
+    def get_processed_data(self) -> dict:
+        return {
+            'question': self.question,
+            'answers': self.answer.data
+        }
+
+
+class QuizSolverForm(Form):
+
+    def __init__(self, quiz: Quiz, *args, **kwargs):
+        kwargs['data'] = {}
+        kwargs['data']['questions'] = [q for q in quiz.questions]
+        super().__init__(*args, **kwargs)
+
+    def validate(self, extra_validators=None) -> bool:
+        """
+        This method validates the form, it's done simply by
+        validating all subforms
+        """
+        return self.questions.validate(extra_validators)
+
+    questions = FieldList(
+        FormField(QuestionSolverForm, label='Questions'),
+        min_entries=0, max_entries=250
+    )
+
+    def get_processed_data(self) -> dict:
+        return {
             'questions': [
                 question.get_processed_data() for question in self.questions
             ]
