@@ -8,13 +8,16 @@
                 Quiz form
             -->
             {{ form.csrf_token }}
-            <div class="mb-3">
-                {{form.category(class="form-select")}}
-            </div>
+            <h1 class="mb-5 mt-3 fw-light">Create a new Quiz</h1>
             <div class="mb-3">
                 <label for="titleInput">{{form.title.label}}</label>
                 {{form.title(class="form-control", id="titleInput")}}
                 <div id="titleHelp" class="form-text">Enter your quiz title here</div>
+            </div>
+            <div class="mb-3">
+                <label for="categoryInput">{{form.category.label}}</label>
+                {{form.category(class="form-select")}}
+                <div id="categoryHelp" class="form-text">Choose the category</div>
             </div>
             <div class="mb-3">
                 <label for="descInput">{{form.description.label}}</label>
@@ -27,8 +30,9 @@
                     {% include 'quiz/partials/new_question.html' %}
                 {% endwith %}
             </div>
-
-            <input class="btn btn-outline-success" type="submit" value="Create Quiz">
+            <div class="d-flex justify-content-md-end">
+                <input class="btn btn-lg btn-outline-success" type="submit" value="Create Quiz">
+            </div>
 
         </form>
 

@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/navbar.css') }}"/>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
 
   <div class="container-fluid">
 
@@ -27,6 +27,41 @@
           </a>
         </li>
       </ul>
+    </div>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse" id="navbarToggleExternalContent">
+      <div class="navbar-nav nav-pills nav-justified bg-light container mt-3">
+          <ul class="row">
+            <div class="col">
+              <li class="nav-item">
+                <a class="nav-link" id="home-tab" href="{{ url_for('website.home') }}">
+                  Home
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="quizlist-tab" href="{{ url_for('quiz.quiz_list') }}">
+                Available Quizzes
+                </a>
+              </li>
+            </div>
+            <div class="col">
+              <li class="nav-item">
+                <a class="nav-link" id="createquiz-tab" href="{{ url_for('quiz.quiz_create') }}">
+                Create Quiz
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="aboutus-tab" href="{{ url_for('website.about_us') }}">
+                About Us
+                </a>
+              </li>
+            </div>
+          </ul>
+      </div>
     </div>
 
     <div class="d-flex">
