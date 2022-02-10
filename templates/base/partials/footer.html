@@ -1,0 +1,35 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/footer.css') }}"/>
+
+<footer class="footer bg-light text-lg-start border-top shadow py-3">
+    <!-- Grid container -->
+    <div class="container" align="center">
+      <!--Grid row-->
+      <div class="row">
+        <!--Grid column-->
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+          <h5 class="text">See the project on:</h5>
+          <a class="text-dark" href="https://github.com/mtyton/QuizzingSpree"><img src="{{ url_for('static', filename='imgs/footer/github.png') }}" style="width: 2rem; height:2rem;"></a>
+        </div>
+        <!--Grid column-->
+  
+        <!--Grid column-->
+        <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+          <h5 class="text">Get to know us:</h5>
+          <a class="text-dark" href="{{ url_for('website.about_us') }}"><img src="{{ url_for('static', filename='imgs/footer/aboutus.png') }}" style="width: 2rem; height:2rem;"></a>
+        </div>
+        <!--Grid column-->
+      </div>
+      <!--Grid row-->
+    
+      <!-- Grid container -->
+      <hr>
+      <!-- Copyright © 2022 -->
+      <div class="row col-md-10 p-2">
+        <div class="col align-items-center">
+            <h5 class="d-inline">2022 ©</h5>
+            <a class="d-inline text-dark" href="https://github.com/mtyton/QuizzingSpree"><img src="{{ url_for('static', filename='imgs/favicon.ico') }}" alt="QuizzingSpree"></a>
+        </div>
+      </div>
+    </div>
+    <!-- Copyright -->
+  </footer>

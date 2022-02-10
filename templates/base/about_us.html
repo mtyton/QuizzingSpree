@@ -2,9 +2,8 @@
 
 {% block content %}
 
-    <div class="bg-image" style="background-image: url('https://wallpapersmug.com/download/1920x1080/4d7d03/light-colors-geometric-pattern-abstract.jpg');
-      height: 200vh;">
-      <div class="container" align="center">
+    <div class="bg-image" align="center">
+      <div class="container">
         <div class="card border-0 shadow my-5">
           <div class="card-body p-5">
 
@@ -12,38 +11,48 @@
               <p class="lead"> We - the creators of this page - are students at the Silesian University of Technology.</p>
               <p class="lead"> What you are currently looking at is our final project from the subject Software Engineering. </p>
               <p class="lead"> Hope you enjoyed!</p>
-                <div style="height: 50px"></div>
+                <div style="height: 25px"></div>
 
-                <section class="py-5">
-                    <div class="container px-4 px-lg-5 mt-5">
+                <section class="d-flex py-5">
+                    <div class="px-4 px-lg-5 mt-5">
                         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
 
-                            <div class="col mb-5">
-                                <div class="card h-100">
-                                    <img class="card-img-top" src="https://i.pinimg.com/originals/c7/20/66/c72066d79e013e863319e73a8b72cd4a.jpg" width="450" height="300"/>
-                                    <div class="card-body p-4">
+                            <div class="col mb-5 mt-5">
+                                <img class="card-img-top img-responsive" src="{{ url_for('static', filename='imgs/penguins/mati.png') }}"/>
+                                <div class="card h-50">
+                                    <div class="card-body p-3">
                                         <div class="text-center">
-                                            <h5 class="fw-bolder">Mateusz Tytoń</h5>
+                                            <h5 class="lead">Mateusz Tytoń</h5>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col mb-5">
-                                <div class="card h-100">
-                                    <img class="card-img-top" src="https://i.pinimg.com/originals/38/9d/69/389d696b96ba09d750d4ad3785c34986.jpg" width="450" height="300"/>
-                                    <div class="card-body p-4">
+                            <div class="col mb-5 mt-5">
+                                <img class="card-img-top img-responsive" src="{{ url_for('static', filename='imgs/penguins/ada.png') }}"/>
+                                <div class="card h-50">
+                                    <div class="card-body p-3">
                                         <div class="text-center">
-                                            <h5 class="fw-bolder">Ada Jajkowska</h5>
+                                            <h5 class="lead">Ada Jajkowska</h5>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col mb-5">
-                                <div class="card h-100">
-                                    <img class="card-img-top" src="https://i.pinimg.com/originals/04/9f/50/049f502c65411d160da4e524d174b9bf.jpg" width="450" height="300" />
-                                    <div class="card-body p-4">
+                            <div class="col mb-5 mt-5">
+                                <img class="card-img-top img-responsive" src="{{ url_for('static', filename='imgs/penguins/niko.png') }}"/>
+                                <div class="card h-50">
+                                    <div class="card-body p-3">
                                         <div class="text-center">
-                                            <h5 class="fw-bolder">Nikodem ???</h5>
+                                            <h5 class="lead">Nikodem Lewandowicz</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col mb-5 mt-5">
+                                <img class="card-img-top img-responsive" src="{{ url_for('static', filename='imgs/penguins/damian.png') }}" />
+                                <div class="card h-50">
+                                    <div class="card-body p-3">
+                                        <div class="text-center">
+                                            <h5 class="lead">Damian Woźniak</h5>
                                         </div>
                                     </div>
                                 </div>

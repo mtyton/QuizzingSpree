@@ -42,7 +42,7 @@ class TestConfig(BasicConfig):
     TESTING = False
     ENV = 'test'
     # FIXME - this is dumb af, somehow pytest does not load .env variables!!!!
-    SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://root:zaq1%40WSX@127.0.0.1" \
+    SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://root:p4ss!@localhost" \
                               "/test_quizzing_spree"
 
 

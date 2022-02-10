@@ -1,29 +1,25 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-
+<div class="bg-image">
   {% for quiz in pagination.items %}
-    <div class="row g-0 border border-light border-4 mt-4">
-      <div class="col-6 col-md-4 border-right border-dark border-4">
-        <img src="{{ url_for('static', filename='images/test_image.jpg') }}"
+    <div class="container card border-0 shadow mt-5">
+      <div class="d-flex align-items-center col-6 col-md-10 p-2 m-2 mt-3">
+        <img src="{{ url_for('static', filename='imgs/puzzle.png') }}"
              class="img-thumbnail rounded float-start"
-             height="100%" width="80%"
-             alt=""
-        >
+             height="65px auto" width="65px auto"
+             alt="">
+        <div style="margin-left: 2rem;"></div>
+        <h4 class="display-4">{{ quiz.title }}</h4>
       </div>
-      <div class="col-sm-6 col-md-8">
-        <div class="container mt-3">
-          <h3>{{ quiz.title }}</h3>
-          <div class="mt-2">{{ quiz.description }}</div>
-          <div class="mt-4">
-            <h5 class="w-25 d-inline-block">By: {{ quiz.author.username }}</h5>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end me-4">
-              <a href="{{ url_for('quiz.quiz_solve', quiz_id=quiz.id) }}" class="btn btn-lg btn-success" type="button">Start</a>
-            </div>
+      <hr>
+      <div class="ml-3">{{ quiz.description }}</div>
+        <div class="d-flex align-items-center justify-content-between">
+          <div>Author: {{ quiz.author.username }}</div>
+          <div>
+            <a class="btn btn-lg btn-outline-success m-2" href="{{ url_for('quiz.quiz_solve', quiz_id=quiz.id) }}" type="button">Start Quiz</a>
           </div>
         </div>
-      </div>
     </div>
   {% endfor %}
 
