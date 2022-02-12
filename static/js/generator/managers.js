@@ -174,13 +174,11 @@ $(document).ready(function() {
     $("#question-add-btn").click(function(event) {
         event.preventDefault();
         questionManager.addQuestion();
+        bindAddAnswerButtons(questionManager);
     })
 
     bindAddAnswerButtons(questionManager);
 
-    $("#question-add-btn").click(function() {
-        bindAddAnswerButtons(questionManager);
-    })
 
 });
 

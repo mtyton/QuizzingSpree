@@ -1,7 +1,6 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="bg-image">
   {% for quiz in pagination.items %}
     <div class="container card border-0 shadow mt-5">
       <div class="d-flex align-items-center col-6 col-md-10 p-2 m-2 mt-3">
@@ -47,6 +46,4 @@
       </ul>
     </nav>
   {% endif %}
-
-</div>
 {% endblock %}

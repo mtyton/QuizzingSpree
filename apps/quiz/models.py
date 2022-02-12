@@ -18,6 +18,9 @@ class QuizCategory(db.Model):
         self.category_name = category_name
         self.slug_name = slug_name
 
+    def __str__(self):
+        return self.category_name
+
 
 class Quiz(db.Model):
 

@@ -18,32 +18,34 @@
 
     <body>
         {% include 'base/partials/navbar.html' %}
+        <div class="bg-image" align="center">
+            {% block messages %}
+                <div class="container.mt-3">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert
+                                {% if category == 'error' %}alert-danger{%else%}
+                                {%if category=='info'%}alert-info{%else%}alert-success
+                                {%endif%}{%endif%}"
+                                >{{ message }}</div>
+                            {% endfor %}
+                       {% endif %}
+                    {% endwith %}
+                </div>
+            {% endblock %}
 
-        {% block messages %}
-        <div class="nav-item container.mt-3">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert
-                        alert-{% if category == 'error' %}danger{%else%}
-                        {%if category=='info'%}info{%else%}success
-                        {%endif%}{%endif%}"
-                        >{{ message }}</div>
-                    {% endfor %}
-               {% endif %}
-            {% endwith %}
-          </div>
-        {% endblock %}
+            {% block content %}
+            {% endblock %}
+        </div>
 
-        {% block content %}
-        {% endblock %}
 
         {% include 'base/partials/footer.html' %}
 
-        {% block scriptextras %}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='js/navbar.js') }}"></script>
+        {% block scriptextras %}
         {% endblock %}
     </body>
 
