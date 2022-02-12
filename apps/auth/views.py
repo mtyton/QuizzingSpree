@@ -80,7 +80,6 @@ class MyAccountView(BasePermissionCheckMethodView):
         basic_context = {
             'latest_quiz_attempts': latest_quiz_attempts
         }
-
         if latest_quiz_attempts is None:
             basic_context.update({
                 'error_message': "You don't have any quiz attempts yet"

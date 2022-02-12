@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="bg-image" align="center">
+
     <div class="container card border-0 shadow mt-5" align="left">
         <form id="quiz_create_form" method="POST">
             <!--
@@ -33,17 +33,15 @@
             <div class="d-flex justify-content-md-end">
                 <input class="btn btn-lg btn-outline-success" type="submit" value="Create Quiz">
             </div>
-
+            <button class="btn btn-outline" id="question-add-btn">
+                <i class="bi bi-plus-square"></i> Add question
+            </button>
         </form>
 
         <div class="visually-hidden" id="question-template-container">
 
         </div>
-
     </div>
-
-</div>
-
 
 {% endblock %}
 

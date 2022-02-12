@@ -7,9 +7,6 @@
     <div class="mb-3">
         <label for="questionInput_0">{{question_form.content.label}}</label>
         {{question_form.content(class="form-control", id="questionInput_0")}}
-        <button class="btn btn-outline" type="button" id="question-add-btn">
-            <i class="bi bi-plus-square"></i> Add question
-        </button>
     </div>
 
     <div class="mb-3">
@@ -19,7 +16,7 @@
                 {% include 'quiz/partials/new_answer.html' %}
             {% endwith %}
         </ul>
-        <button class="btn btn-outline" type="button" id="add_answer_0">
+        <button class="btn btn-outline" id="add_answer_0">
             <i class="bi bi-plus-square"></i> Add answer
         </button>
     </div>
